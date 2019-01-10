@@ -17,6 +17,7 @@ it is empty *)
     | NEWLINE
     | LPAREN
     | RPAREN
+    | DIV
 
 (* The nonterminals of the language *)
 %nonterm EXP     of Ast.Expr
@@ -32,7 +33,7 @@ left associative and the precedence increase as you go down this list.
 *)
 
 %left PLUS MINUS  (* + and - are of same precedence *)
-%left MUL         (* higher than + and -            *)
+%left MUL  DIV    (* higher than + and -            *)
 
 (* The type that captures position in the input *)
 %pos int
@@ -50,3 +51,4 @@ EXP     : CONST                ( Ast.Const CONST     )
 	| EXP MINUS EXP        ( Ast.minus EXP1 EXP2 )
 	| EXP MUL   EXP        ( Ast.mul   EXP1 EXP2 )
         | LPAREN EXP RPAREN    ( EXP )
+        | EXP DIV EXP          ( Ast.divf   EXP1 EXP2 )
