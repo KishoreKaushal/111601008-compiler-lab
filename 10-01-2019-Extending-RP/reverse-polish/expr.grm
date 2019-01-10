@@ -15,6 +15,8 @@ it is empty *)
     | MUL
     | EOF
     | NEWLINE
+    | LPAREN
+    | RPAREN
 
 (* The nonterminals of the language *)
 %nonterm EXP     of Ast.Expr
@@ -47,3 +49,4 @@ EXP     : CONST                ( Ast.Const CONST     )
         | EXP PLUS EXP         ( Ast.plus  EXP1 EXP2 )
 	| EXP MINUS EXP        ( Ast.minus EXP1 EXP2 )
 	| EXP MUL   EXP        ( Ast.mul   EXP1 EXP2 )
+        | LPAREN EXP RPAREN    ( EXP )

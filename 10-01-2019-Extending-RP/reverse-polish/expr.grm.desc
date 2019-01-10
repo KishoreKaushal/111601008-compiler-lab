@@ -4,11 +4,12 @@ state 0:
 	PROGRAM : . EXPS 
 	PROGRAM : . EXPS NEWLINE 
 
-	CONST	shift 3
+	CONST	shift 4
+	LPAREN	shift 3
 
 	EXP	goto 2
 	EXPS	goto 1
-	PROGRAM	goto 13
+	PROGRAM	goto 16
 
 	.	reduce by rule 2
 
@@ -18,7 +19,7 @@ state 1:
 	PROGRAM : EXPS .  (reduce by rule 0)
 	PROGRAM : EXPS . NEWLINE 
 
-	NEWLINE	shift 4
+	NEWLINE	shift 5
 
 
 	.	reduce by rule 0
@@ -31,16 +32,28 @@ state 2:
 	EXP : EXP . MUL EXP 
 	EXPS : EXP . NEWLINE EXPS 
 
-	PLUS	shift 8
-	MINUS	shift 7
-	MUL	shift 6
-	NEWLINE	shift 5
+	PLUS	shift 9
+	MINUS	shift 8
+	MUL	shift 7
+	NEWLINE	shift 6
 
 
 	.	error
 
 
 state 3:
+
+	EXP : LPAREN . EXP RPAREN 
+
+	CONST	shift 4
+	LPAREN	shift 3
+
+	EXP	goto 10
+
+	.	error
+
+
+state 4:
 
 	EXP : CONST .  (reduce by rule 4)
 
@@ -49,7 +62,7 @@ state 3:
 	.	reduce by rule 4
 
 
-state 4:
+state 5:
 
 	PROGRAM : EXPS NEWLINE .  (reduce by rule 1)
 
@@ -58,52 +71,72 @@ state 4:
 	.	reduce by rule 1
 
 
-state 5:
+state 6:
 
 	EXPS : EXP NEWLINE . EXPS 
 
-	CONST	shift 3
+	CONST	shift 4
+	LPAREN	shift 3
 
 	EXP	goto 2
-	EXPS	goto 9
+	EXPS	goto 11
 
 	.	reduce by rule 2
 
 
-state 6:
+state 7:
 
 	EXP : EXP MUL . EXP 
 
-	CONST	shift 3
-
-	EXP	goto 10
-
-	.	error
-
-
-state 7:
-
-	EXP : EXP MINUS . EXP 
-
-	CONST	shift 3
-
-	EXP	goto 11
-
-	.	error
-
-
-state 8:
-
-	EXP : EXP PLUS . EXP 
-
-	CONST	shift 3
+	CONST	shift 4
+	LPAREN	shift 3
 
 	EXP	goto 12
 
 	.	error
 
 
+state 8:
+
+	EXP : EXP MINUS . EXP 
+
+	CONST	shift 4
+	LPAREN	shift 3
+
+	EXP	goto 13
+
+	.	error
+
+
 state 9:
+
+	EXP : EXP PLUS . EXP 
+
+	CONST	shift 4
+	LPAREN	shift 3
+
+	EXP	goto 14
+
+	.	error
+
+
+state 10:
+
+	EXP : EXP . PLUS EXP 
+	EXP : EXP . MINUS EXP 
+	EXP : EXP . MUL EXP 
+	EXP : LPAREN EXP . RPAREN 
+
+	PLUS	shift 9
+	MINUS	shift 8
+	MUL	shift 7
+	RPAREN	shift 15
+
+
+	.	error
+
+
+state 11:
 
 	EXPS : EXP NEWLINE EXPS .  (reduce by rule 3)
 
@@ -112,7 +145,7 @@ state 9:
 	.	reduce by rule 3
 
 
-state 10:
+state 12:
 
 	EXP : EXP . PLUS EXP 
 	EXP : EXP . MINUS EXP 
@@ -124,33 +157,42 @@ state 10:
 	.	reduce by rule 7
 
 
-state 11:
+state 13:
 
 	EXP : EXP . PLUS EXP 
 	EXP : EXP . MINUS EXP 
 	EXP : EXP MINUS EXP .  (reduce by rule 6)
 	EXP : EXP . MUL EXP 
 
-	MUL	shift 6
+	MUL	shift 7
 
 
 	.	reduce by rule 6
 
 
-state 12:
+state 14:
 
 	EXP : EXP . PLUS EXP 
 	EXP : EXP PLUS EXP .  (reduce by rule 5)
 	EXP : EXP . MINUS EXP 
 	EXP : EXP . MUL EXP 
 
-	MUL	shift 6
+	MUL	shift 7
 
 
 	.	reduce by rule 5
 
 
-state 13:
+state 15:
+
+	EXP : LPAREN EXP RPAREN .  (reduce by rule 8)
+
+
+
+	.	reduce by rule 8
+
+
+state 16:
 
 
 	EOF	accept
@@ -158,5 +200,5 @@ state 13:
 
 	.	error
 
-10 of 27 action table entries left after compaction
-8 goto table entries
+16 of 41 action table entries left after compaction
+9 goto table entries
