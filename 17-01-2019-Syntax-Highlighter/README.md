@@ -21,18 +21,20 @@ A language is a set of *strings*, where a *string* is a finite sequence of *symb
 Using symbols, alternation, concatenation, epsilon, and Kleene closure we can specify the set of ASCII characters corresponding to the lexical tokens of a programming language.
 
 Examples:
-* (0 | 1)*.0    Binary numbers that are multiples of two.
-* b*(abb*)*(a|ϵ)    String of a's and b's with no consecutive a's.
+1. (0 | 1)*.0    Binary numbers that are multiples of two.
+2. b*(abb*)*(a|ϵ)    String of a's and b's with no consecutive a's.
 
-**Extended Regular Expression**
-* M? = (M|ϵ)
-* M+ = (M.M*)
+**Extended Regular Expression:**
 
-**Regular Expressions for some Tokens**
-* if                ⤍   (IF);
-* [a-z][a-z0-9]*    ⤍   (ID);
-* [0-9]+            ⤍   (NUM);
-* ( [0-9]+"."[0-9]* )|( [0-9]*"."[0-9]+) ⤍ (REAL);
+1. M? = (M|ϵ)
+2. M+ = (M.M*)
+
+**Regular Expressions for some Tokens:**
+
+1. if                ⤍   (IF);
+2. [a-z][a-z0-9]*    ⤍   (ID);
+3. [0-9]+            ⤍   (NUM);
+4. ( [0-9]+"."[0-9]* )|( [0-9]*"."[0-9]+) ⤍ (REAL);
 
 **Rule of Longest Match:** The longest initial substring of the input that can match any regular expression is taken as the next token.
 
