@@ -127,3 +127,7 @@ The ML-Lex specification corresponding to this machine is
 ```
 
 where `INITIAL` is the start state, provided by default in all specfications. Any regular expression not prefixed by a <STATE> operates in all states; this feature is rarely useful.
+
+### Syntax Highlighter for Tiger Programming Language:
+
+![](img/syntax-highlighting.png)
