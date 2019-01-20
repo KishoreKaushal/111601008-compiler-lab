@@ -9,15 +9,18 @@ fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
 fun IntFromString str = let val SOME x = Int.fromString str in x end
 
 %%
-digit = [0-9]+ ;
+digit = [0-9] ;
 eol = ("\n\r"|"\r\n"|"\r"|"\n") ;
-whitespace = (" "|\t)+  ;
+whitespace = (" "|\t)  ;
 letter = [a-zA-Z]   ;
+esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 
 %%
 {eol}       => (lineNum := !lineNum+1; 
-                linePos := yypos :: !linePos; 
+                linePos := yypos :: !linePos;
+                print(yytext); 
                 continue());
+{whitespace}+ => (print (yytext); continue());
 ":="        => (Tokens.ASSIGN (yypos, yypos+2));
 "&"         => (Tokens.AND (yypos, yypos+1));
 "|"         => (Tokens.OR (yypos, yypos+1));
@@ -59,12 +62,14 @@ then        => (Tokens.THEN (yypos, yypos+4));
 if          => (Tokens.IF (yypos, yypos+2));
 array       => (Tokens.ARRAY (yypos, yypos+5));
 
-{digit}    => (Tokens.INT(IntFromString yytext, 
+{digit}+    => (Tokens.INT(IntFromString yytext, 
                     yypos, yypos + size yytext));
 
 ({letter}({letter}|{digit}|"_")*) | ("_main")
             =>  (Tokens.ID(yytext, yypos, 
                     yypos + size yytext));
-
-.           => (ErrorMsg.error yypos ("illegal character " ^ yytext); continue());
+["][^"\n]*["]
+            => (Tokens.STRING(yytext, yypos, 
+                    yypos + size yytext));
+.           => (print(yytext); continue());
 

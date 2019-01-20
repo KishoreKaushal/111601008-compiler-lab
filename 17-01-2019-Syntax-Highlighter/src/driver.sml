@@ -6,7 +6,8 @@ struct
 	  val lexer = Mlex.makeLexer get
 	  fun do_it() =
 	      let val t = lexer()
-	       in print t; print "\n";
+	       in print t; 
+		   (* print "\n"; *)
 		   if substring(t,0,3)="EOF" then () else do_it()
 	      end
        in do_it();
