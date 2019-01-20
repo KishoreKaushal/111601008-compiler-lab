@@ -8,8 +8,9 @@ The lexical analyzer takes a stream of characters and produces a stream of names
 A lexical token is a sequence of characters that can be treated as a unit in the grammar of a programming language.
 
 Examples of non-tokens are:
-1. **comment** : /* try again */
-2. **preprocessor directive** : #include<stdio.h>
+
+1. **comment**
+2. **preprocessor directive**
 3. macros, blanks, tabs, and newlines
 
 We will specify lexical tokens using the formal language of regular expressions, implement lexers using deterministic finite automata, and use mathematics to connect the two, which leads to simpler and more readable lexical analyzers.
@@ -20,18 +21,18 @@ A language is a set of *strings*, where a *string* is a finite sequence of *symb
 Using symbols, alternation, concatenation, epsilon, and Kleene closure we can specify the set of ASCII characters corresponding to the lexical tokens of a programming language.
 
 Examples:
-- (0 | 1)*.0    Binary numbers that are multiples of two.
-- b*(abb*)*(a|ϵ)    String of a's and b's with no consecutive a's.
+* (0 | 1)*.0    Binary numbers that are multiples of two.
+* b*(abb*)*(a|ϵ)    String of a's and b's with no consecutive a's.
 
 **Extended Regular Expression**
-- M? = (M|ϵ)
-- M+ = (M.M*)
+* M? = (M|ϵ)
+* M+ = (M.M*)
 
 **Regular Expressions for some Tokens**
-- if ⤍ 
-- [a-z][a-z0-9]* ⤍
-- [0-9]+ ⤍
-- ( [0-9]+"."[0-9]* )|( [0-9]*"."[0-9]+) ⤍ (REAL);
+* if                ⤍   (IF);
+* [a-z][a-z0-9]*    ⤍   (ID);
+* [0-9]+            ⤍   (NUM);
+* ( [0-9]+"."[0-9]* )|( [0-9]*"."[0-9]+) ⤍ (REAL);
 
 **Rule of Longest Match:** The longest initial substring of the input that can match any regular expression is taken as the next token.
 
@@ -103,7 +104,7 @@ Thus, it is appropriate to pass `yypos` and `yypos + size yytext` to the constru
 
 ML-Lex has a mechanism to mix states with regular expressions. One can declare a set of *start states*; each regular expression can be prefixed by the set of start states in which it is valid. The action fragments can explicitly change the start state. In effect, we have a finite automaton whose edges are labeled, not by single symbols, but by regular expression. This example shows a language with simple identifiers, `if` tokens, and comments delimited by (* and *) brackets:
 
-<img src="./img/startstates.png" style="margin-right: 10px;" />
+![](img/startstates.png)
 
 Though it is possible to write regular expression that matches an entire comment, as comments get more complicated it becomes more difficult, or even impossible if nested comments are allowed.
 
