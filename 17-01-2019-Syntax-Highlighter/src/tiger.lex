@@ -68,7 +68,7 @@ array       => (Tokens.ARRAY (yypos, yypos+5));
 ({letter}({letter}|{digit}|"_")*) | ("_main")
             =>  (Tokens.ID(yytext, yypos, 
                     yypos + size yytext));
-["][^"\n]*["]
+\"([^\\\"]|\\.)*\"
             => (Tokens.STRING(yytext, yypos, 
                     yypos + size yytext));
 .           => (print(yytext); continue());
