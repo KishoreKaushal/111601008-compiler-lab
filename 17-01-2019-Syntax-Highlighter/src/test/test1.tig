@@ -16,6 +16,9 @@ let
           nested comment */
      */
     var a_string = "kaushal kishore\""
+    var another_string = "thi si a 
+    string "
+
     var N := 8
 
     type intArray = array of int

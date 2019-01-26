@@ -92,7 +92,7 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 <INITIAL> ({letter}({letter}|{digit}|"_")*) | ("_main")
             =>  (Tokens.ID(yytext, yypos, 
                     yypos + size yytext));
-<INITIAL> \"([^\\\"]|\\.)*\"
+<INITIAL> \"([^\n\\\"]|\\.)*\"
             => (Tokens.STRING(yytext, yypos, 
                     yypos + size yytext));
 
