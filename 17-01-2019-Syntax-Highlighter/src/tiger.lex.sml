@@ -327,7 +327,7 @@ fun yyAction48 (strm, lastMatch : yymatch) = let
 fun yyAction49 (strm, lastMatch : yymatch) = let
       val yytext = yymktext(strm)
       in
-        yystrm := strm; (print(yytext); continue())
+        yystrm := strm; (print("error"); print(yytext); continue())
       end
 fun yyQ46 (strm, lastMatch : yymatch) = (case (yygetc(strm))
        of NONE => yyAction21(strm, yyNO_MATCH)

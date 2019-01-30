@@ -97,5 +97,5 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
                     yypos + size yytext));
 
 
-.           => (print(yytext); continue());
+.           => (print("error"); print(yytext); continue());
 

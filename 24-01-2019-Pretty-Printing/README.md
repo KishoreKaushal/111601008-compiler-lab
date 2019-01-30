@@ -247,4 +247,20 @@ X -> ϵ
 X -> else S
 ```
 
+## LR Parsing
+
+The weakness of LL(k) parsing techniques is that they must predict which production to use, having seen only the first k tokens of the right-hand side. A more powerful technique, LR(k) parsing, is able to postpone the decision until it has seen input tokens corresponding to the entire right-hand side of the production in question (and k more input tokens beyond).
+
+LR(k) stands for *Left-to-right parse, Rightmost-derivation, k-token lookahead*.
+
+The parser has a stack and an input. The first k tokens of the input are the lookahead. Based on the contents of the stack and the lookahead, the parser performs two kinds of actions:
+
+- **Shift:** move the first input token to the top of the stack.
+- **Reduce:** Choose a grammar rule X -> A B C; pop C, B, A from the top of the stack; push X onto the stack.
+
+Initially, the stack is empty and the parser is at the beginning of the input. The action of shifting the end-of-file marker `$` is called accepting and causes the parser to stop successfully.
+
+### LR Parsing Engine
+
+How does the LR parser know when to shift and when to reduce? By  using a deterministic finite automaton! The DFA is not applied to the input - finite automata are too weak to parse context-free grammars - but to the stack. The edges of the DFA are labeled by the symbols (terminals and nonterminals) that can appear on the stack.
 
