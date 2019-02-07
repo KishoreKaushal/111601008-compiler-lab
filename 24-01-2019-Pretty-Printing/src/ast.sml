@@ -7,8 +7,8 @@ structure Ast = struct
                | INTEGER of int
                | STRING of string
                (* Array and record creations *)
-               | ARRAY_CREATE of (exp * exp)
-               | RECORD_CREATE of (id * exp) list
+               | ARRAY_CREATE of (id * exp * exp)
+               | RECORD_CREATE of (id * (id * exp) list)
 
                (* Operations *)
                | OP of (exp * op * exp)
@@ -53,7 +53,7 @@ structure Ast = struct
                   TYPEID of id
                 (* record type definition *)
                 | TYFIELDS of (id * id) list
-				| ARRAY of id
+		| ARRAY of id
 
   and 
 
@@ -75,6 +75,12 @@ structure Ast = struct
   and
 
   datatype program 	= EXPR of exp
-					| DECS of decs
+			| DECS of decs
 
+
+  fun array_create typeid exp1 exp2 = ARRAY_CREATE (typeid , exp1, exp2)
+  (* fun record_create *)
+  
+  fun lvalue_create = 
+  
 end

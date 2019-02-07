@@ -1,17 +1,37 @@
 %%
-%term	EOF | SEMICOLON
+%term	EOF 
+	| SEMICOLON
 	| ID of string
-	| INT of int | STRING of string 
+	| INT of int 
+	| STRING of string 
 	| COMMA | COLON | LPAREN | RPAREN | LBRACK | RBRACK 
 	| LBRACE | RBRACE | DOT 
 	| PLUS | MINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE
 	| AND | OR | ASSIGN
-	| ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
+	| ARRAY | IF | THEN | ELSE | WHILE | FOR 
+	| TO | DO | LET | IN | END | OF 
 	| BREAK | NIL
 	| FUNCTION | VAR | TYPE 
 
-%nonterm	exp | program | decs | typeid | record | lvalue | args | op | els 
-		| exps | arg | rec | expss | ty | vardec | tyfields | optypeid | tyfld
+%nonterm	exp of Ast.exp
+		| program of Ast.program
+		| decs of Ast.decs
+		| typeid of Ast.id
+		| record
+		| lvalue of Ast.lvalue
+		| args 
+		| op of Ast.op
+		| els 
+		| exps of Ast.exps
+		| arg 
+		| rec 
+		| expss 
+		| ty of Ast.ty
+		| vardec
+		| tyfields
+		| optypeid 
+		| tyfld
+		| dec of Ast.dec
 
 %left TIMES DIVIDE
 %left PLUS MINUS
@@ -38,20 +58,23 @@
 
 %%
 
-program	:	exp		()
-	|	decs		()
+program	:	exp		(exp)
+	|	decs		(decs)
 	
-exp	:	NIL		()
-	|	INT		(INT)
-	|	STRING		(STRING)
+exp	:	NIL		(Ast.NIL)
+	|	INT		(Ast.INTEGER INT)
+	|	STRING		(Ast.STRING STRING)
 	
 
-	(* Array and record creations *)
-	|	typeid LBRACK exp RBRACK OF exp
-	|	typeid LBRACE record RBRACE
-	
+	(* Array creations *)
+	|	typeid LBRACK exp RBRACK OF exp	(Ast.array_create typeid exp exp)
+
+	(* Record creations
+	|	typeid LBRACE record RBRACE 	(Ast.record_create typeid record)
+	*)
+
 	(* variables, field, elements of an array *)
-	|	lvalue
+	|	lvalue		(lvalue)
 
 	(* function call *)
 	|	ID LPAREN args RPAREN
@@ -85,9 +108,9 @@ record	:	ID EQ exp rec			()
 rec	:	COMMA ID EQ exp 		()
 	|					()
 
-lvalue	:	ID				()
-	|	lvalue DOT ID			()
-	|	lvalue LBRACK exp RBRACK	()
+lvalue	:	ID				(Ast.LVAL_IDEN ID)
+	|	lvalue DOT ID			(Ast.FIELD (lvalue,ID))
+	|	lvalue LBRACK exp RBRACK	(Ast.ELEMENT (lvalue,exp))
 
 exps	:	exp expss			()
 	|					()
@@ -110,9 +133,9 @@ vardec	:	VAR ID optypeid ASSIGN exp	()
 optypeid:	COLON typeid			()
 	|					()
 
-ty	:	typeid				()
+ty	:	typeid				(typeid)
 	|	LBRACE tyfields  RBRACE 	()
-	|	ARRAY OF typeid
+	|	ARRAY OF typeid			()
 
 tyfields:	ID COLON typeid tyfld		()
 	|					()
@@ -120,7 +143,7 @@ tyfields:	ID COLON typeid tyfld		()
 tyfld	:	ID COLON typeid tyfld		()
 	|					()
 	
-typeid	:	ID				()
+typeid	:	ID				(Ast.TYPEID ID)
 
 op	:	PLUS				()
 	|	MINUS				()
