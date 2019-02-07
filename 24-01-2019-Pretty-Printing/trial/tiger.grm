@@ -1,0 +1,137 @@
+%%
+%term	EOF | SEMICOLON
+	| ID of string
+	| INT of int | STRING of string 
+	| COMMA | COLON | LPAREN | RPAREN | LBRACK | RBRACK 
+	| LBRACE | RBRACE | DOT 
+	| PLUS | MINUS | TIMES | DIVIDE | EQ | NEQ | LT | LE | GT | GE
+	| AND | OR | ASSIGN
+	| ARRAY | IF | THEN | ELSE | WHILE | FOR | TO | DO | LET | IN | END | OF 
+	| BREAK | NIL
+	| FUNCTION | VAR | TYPE 
+
+%nonterm	exp | program | decs | typeid | record | lvalue | args | op | els 
+		| exps | arg | rec | expss | ty | vardec | tyfields | optypeid | tyfld
+
+%left TIMES DIVIDE
+%left PLUS MINUS
+%nonassoc GE LE EQ NE LT GT
+%left AND
+%left OR
+
+%pos int
+%verbose
+%start program
+%eop EOF
+%noshift EOF
+
+%name Tiger
+
+%keyword WHILE FOR TO BREAK LET IN END FUNCTION VAR TYPE ARRAY IF THEN ELSE 
+	DO OF NIL
+
+%prefer THEN ELSE LPAREN
+
+%value ID ("bogus")
+%value INT (1)
+%value STRING ("")
+
+%%
+
+program	:	exp		()
+	|	decs		()
+	
+exp	:	NIL		()
+	|	INT		(INT)
+	|	STRING		(STRING)
+	
+
+	(* Array and record creations *)
+	|	typeid LBRACK exp RBRACK OF exp
+	|	typeid LBRACE record RBRACE
+	
+	(* variables, field, elements of an array *)
+	|	lvalue
+
+	(* function call *)
+	|	ID LPAREN args RPAREN
+
+	(* method call *)
+	|	lvalue DOT LPAREN args RPAREN	
+
+	(* operations *)
+	|	MINUS exp
+	|	exp op exp
+	|	LPAREN exps RPAREN
+
+	(* assignment *)
+	|	lvalue ASSIGN exp
+
+	(* control structures *)
+	|	IF exp THEN exp els
+	|	WHILE exp DO exp
+	|	FOR ID ASSIGN exp TO exp DO exp
+	|	BREAK
+	|	LET decs IN exps END
+	
+args	:	exp arg				()
+	|					()
+
+arg	:	COMMA exp arg			()
+	|					()
+
+record	:	ID EQ exp rec			()
+
+rec	:	COMMA ID EQ exp 		()
+	|					()
+
+lvalue	:	ID				()
+	|	lvalue DOT ID			()
+	|	lvalue LBRACK exp RBRACK	()
+
+exps	:	exp expss			()
+	|					()
+
+expss	:	SEMICOLON exp expss		()
+	|					()
+
+els	:	ELSE exp			()
+	|					()
+
+decs	:	dec				()
+	|					()
+
+dec	:	TYPE ID EQ ty			()
+	|	vardec				()
+	|	FUNCTION ID LPAREN tyfields RPAREN optypeid EQ exp ()
+
+vardec	:	VAR ID optypeid ASSIGN exp	()
+
+optypeid:	COLON typeid			()
+	|					()
+
+ty	:	typeid				()
+	|	LBRACE tyfields  RBRACE 	()
+	|	ARRAY OF typeid
+
+tyfields:	ID COLON typeid tyfld		()
+	|					()
+
+tyfld	:	ID COLON typeid tyfld		()
+	|					()
+	
+typeid	:	ID				()
+
+op	:	PLUS				()
+	|	MINUS				()
+	|	TIMES				()
+	|	DIVIDE				()
+	|	EQ				()
+	|	NEQ				()
+	|	GT				()
+	|	LT				()
+	|	GE				()
+	|	LE				()
+	|	AND				()
+	|	OR				()
+
