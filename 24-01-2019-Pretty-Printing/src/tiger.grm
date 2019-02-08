@@ -60,7 +60,7 @@ dec 	:	TYPE ID EQ ty			(Ast.TYPE(ID , ty))
 ty		:	ID						(Ast.TYPEID(ID))
 
 exps 	:							([])
-		|	exp 					(exp)
+		|	exp 					(exp::[])
 		|	exp SEMICOLON exps 		(exp::exps)
 
 lvalue	:	ID						(Ast.LVAL_IDEN(ID))

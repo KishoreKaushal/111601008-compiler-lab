@@ -21,7 +21,7 @@ fun print_expression (Ast.INT x) = print (Int.toString (x))
 
 |   print_expression(Ast.LET (dec_lst , exp_lst)) =
         (   indent := (!indent + 1);
-        
+
             print ("let" ^ new_line(!indent));
 
             print_decs (dec_lst);
@@ -49,6 +49,7 @@ and
 
 print_exps (x::exp_lst)   =
     (   print_expression (x);
+        print (";");
         print (new_line(!indent));
         print_exps(exp_lst))
 |   print_exps []   = (print (bktab))

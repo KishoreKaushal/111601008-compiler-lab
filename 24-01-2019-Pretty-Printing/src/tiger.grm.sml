@@ -335,7 +335,7 @@ end
  in ( LrTable.NT 5, ( result, defaultPos, defaultPos), rest671)
 end
 |  ( 17, ( ( _, ( MlyValue.exp exp1, exp1left, exp1right)) :: rest671)) => let val  result = MlyValue.exps (fn _ => let val  (exp as exp1) = exp1 ()
- in ((*#line 63.15 "tiger.grm"*)exp(*#line 337.1 "tiger.grm.sml"*)
+ in ((*#line 63.15 "tiger.grm"*)exp::[](*#line 337.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 5, ( result, exp1left, exp1right), rest671)
