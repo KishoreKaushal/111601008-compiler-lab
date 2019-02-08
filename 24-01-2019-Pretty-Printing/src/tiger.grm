@@ -22,6 +22,7 @@
 
 %left TIMES DIVIDE
 %left PLUS MINUS
+%left ASSIGN
 
 %name Tiger
 

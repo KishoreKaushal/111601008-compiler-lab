@@ -33,7 +33,7 @@ val table=let val actionRows =
 \\033\000\006\000\015\000\007\000\014\000\000\000\
 \\034\000\006\000\015\000\007\000\014\000\000\000\
 \\035\000\000\000\
-\\036\000\006\000\015\000\007\000\014\000\008\000\013\000\009\000\012\000\000\000\
+\\036\000\000\000\
 \\037\000\000\000\
 \\038\000\000\000\
 \\039\000\000\000\
@@ -183,85 +183,85 @@ fn (i392,defaultPos,stack,
     (()):arg) =>
 case (i392,stack)
 of  ( 0, ( ( _, ( MlyValue.program program1, program1left, program1right)) :: rest671)) => let val  result = MlyValue.init (fn _ => let val  (program as program1) = program1 ()
- in ((*#line 30.20 "tiger.grm"*)program(*#line 185.1 "tiger.grm.sml"*)
+ in ((*#line 31.20 "tiger.grm"*)program(*#line 185.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 0, ( result, program1left, program1right), rest671)
 end
-|  ( 1, ( rest671)) => let val  result = MlyValue.program (fn _ => ((*#line 32.17 "tiger.grm"*)[](*#line 191.1 "tiger.grm.sml"*)
+|  ( 1, ( rest671)) => let val  result = MlyValue.program (fn _ => ((*#line 33.17 "tiger.grm"*)[](*#line 191.1 "tiger.grm.sml"*)
 ))
  in ( LrTable.NT 1, ( result, defaultPos, defaultPos), rest671)
 end
 |  ( 2, ( ( _, ( MlyValue.program program1, _, program1right)) :: _ :: ( _, ( MlyValue.exp exp1, exp1left, _)) :: rest671)) => let val  result = MlyValue.program (fn _ => let val  (exp as exp1) = exp1 ()
  val  (program as program1) = program1 ()
- in ((*#line 33.28 "tiger.grm"*)exp::program(*#line 195.1 "tiger.grm.sml"*)
+ in ((*#line 34.28 "tiger.grm"*)exp::program(*#line 195.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 1, ( result, exp1left, program1right), rest671)
 end
 |  ( 3, ( ( _, ( MlyValue.INT INT1, INT1left, INT1right)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  (INT as INT1) = INT1 ()
- in ((*#line 35.38 "tiger.grm"*)Ast.INT(INT)(*#line 202.1 "tiger.grm.sml"*)
+ in ((*#line 36.38 "tiger.grm"*)Ast.INT(INT)(*#line 202.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, INT1left, INT1right), rest671)
 end
 |  ( 4, ( ( _, ( MlyValue.exp exp2, _, exp2right)) :: _ :: ( _, ( MlyValue.exp exp1, exp1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  exp1 = exp1 ()
  val  exp2 = exp2 ()
- in ((*#line 36.38 "tiger.grm"*)Ast.BINOP(exp1,Ast.PLUS,exp2)(*#line 208.1 "tiger.grm.sml"*)
+ in ((*#line 37.38 "tiger.grm"*)Ast.BINOP(exp1,Ast.PLUS,exp2)(*#line 208.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, exp1left, exp2right), rest671)
 end
 |  ( 5, ( ( _, ( MlyValue.exp exp2, _, exp2right)) :: _ :: ( _, ( MlyValue.exp exp1, exp1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  exp1 = exp1 ()
  val  exp2 = exp2 ()
- in ((*#line 37.22 "tiger.grm"*)Ast.BINOP(exp1,Ast.MINUS,exp2)(*#line 215.1 "tiger.grm.sml"*)
+ in ((*#line 38.22 "tiger.grm"*)Ast.BINOP(exp1,Ast.MINUS,exp2)(*#line 215.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, exp1left, exp2right), rest671)
 end
 |  ( 6, ( ( _, ( MlyValue.exp exp2, _, exp2right)) :: _ :: ( _, ( MlyValue.exp exp1, exp1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  exp1 = exp1 ()
  val  exp2 = exp2 ()
- in ((*#line 38.22 "tiger.grm"*)Ast.BINOP(exp1,Ast.TIMES,exp2)(*#line 222.1 "tiger.grm.sml"*)
+ in ((*#line 39.22 "tiger.grm"*)Ast.BINOP(exp1,Ast.TIMES,exp2)(*#line 222.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, exp1left, exp2right), rest671)
 end
 |  ( 7, ( ( _, ( MlyValue.exp exp2, _, exp2right)) :: _ :: ( _, ( MlyValue.exp exp1, exp1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  exp1 = exp1 ()
  val  exp2 = exp2 ()
- in ((*#line 39.23 "tiger.grm"*)Ast.BINOP(exp1,Ast.DIVIDE,exp2)(*#line 229.1 "tiger.grm.sml"*)
+ in ((*#line 40.23 "tiger.grm"*)Ast.BINOP(exp1,Ast.DIVIDE,exp2)(*#line 229.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, exp1left, exp2right), rest671)
 end
 |  ( 8, ( ( _, ( MlyValue.STRING STRING1, STRING1left, STRING1right)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  (STRING as STRING1) = STRING1 ()
- in ((*#line 40.17 "tiger.grm"*)Ast.STRING(STRING)(*#line 236.1 "tiger.grm.sml"*)
+ in ((*#line 41.17 "tiger.grm"*)Ast.STRING(STRING)(*#line 236.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, STRING1left, STRING1right), rest671)
 end
 |  ( 9, ( ( _, ( MlyValue.exp exp1, _, exp1right)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, lvalue1left, _)) :: rest671)) => let val  result = MlyValue.exp (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
  val  (exp as exp1) = exp1 ()
- in ((*#line 41.25 "tiger.grm"*)Ast.ASSIGNMENT(lvalue , exp)(*#line 242.1 "tiger.grm.sml"*)
+ in ((*#line 42.25 "tiger.grm"*)Ast.ASSIGNMENT(lvalue , exp)(*#line 242.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 2, ( result, lvalue1left, exp1right), rest671)
 end
 |  ( 10, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (ID as ID1) = ID1 ()
- in ((*#line 43.19 "tiger.grm"*)Ast.LVAL_IDEN(ID)(*#line 249.1 "tiger.grm.sml"*)
+ in ((*#line 44.19 "tiger.grm"*)Ast.LVAL_IDEN(ID)(*#line 249.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 3, ( result, ID1left, ID1right), rest671)
 end
 |  ( 11, ( ( _, ( MlyValue.ID ID1, _, ID1right)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, lvalue1left, _)) :: rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
  val  (ID as ID1) = ID1 ()
- in ((*#line 44.22 "tiger.grm"*)Ast.FIELD (lvalue,ID)(*#line 255.1 "tiger.grm.sml"*)
+ in ((*#line 45.22 "tiger.grm"*)Ast.FIELD (lvalue,ID)(*#line 255.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 3, ( result, lvalue1left, ID1right), rest671)
 end
 |  ( 12, ( ( _, ( _, _, RBRACK1right)) :: ( _, ( MlyValue.exp exp1, _, _)) :: _ :: ( _, ( MlyValue.lvalue lvalue1, lvalue1left, _)) :: rest671)) => let val  result = MlyValue.lvalue (fn _ => let val  (lvalue as lvalue1) = lvalue1 ()
  val  (exp as exp1) = exp1 ()
- in ((*#line 45.31 "tiger.grm"*)Ast.ELEMENT (lvalue,exp)(*#line 262.1 "tiger.grm.sml"*)
+ in ((*#line 46.31 "tiger.grm"*)Ast.ELEMENT (lvalue,exp)(*#line 262.1 "tiger.grm.sml"*)
 )
 end)
  in ( LrTable.NT 3, ( result, lvalue1left, RBRACK1right), rest671)
