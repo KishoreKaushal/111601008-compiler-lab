@@ -17,3 +17,20 @@ arr[  2 +     5 / 5]
 :=
 
 9;
+
+
+let var hello := "world" var cat := "dog" var color := "red" var age := 16 type number = int
+in
+        let var world := "hello"
+            var dog := "cat"
+                type stringType = string
+
+                in
+
+                end
+                ;
+        2     +       3            * 5;
+        5 / 4 / 6;
+ end
+
+;

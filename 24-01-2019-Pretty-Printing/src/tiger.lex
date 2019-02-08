@@ -38,6 +38,12 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 "]"         => (Tokens.RBRACK (yypos, yypos+1));
 "["         => (Tokens.LBRACK (yypos, yypos+1));
 "."         => (Tokens.DOT (yypos, yypos+1));
+"="         => (Tokens.EQ (yypos, yypos+1));
+let         => (Tokens.LET (yypos, yypos+3));
+in          => (Tokens.IN (yypos, yypos+2));
+end         => (Tokens.END (yypos, yypos+3));
+var  	    => (Tokens.VAR (yypos, yypos+3));
+type        => (Tokens.TYPE (yypos, yypos+4));
 {digit}+    => (Tokens.INT(IntFromString yytext,
                     yypos, yypos + size yytext));
 ({letter}({letter}|{digit}|"_")*) | ("_main")

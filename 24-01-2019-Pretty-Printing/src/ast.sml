@@ -7,6 +7,16 @@ structure Ast = struct
                     | STRING of string
                     | BINOP of (exp * binop * exp)
                     | ASSIGNMENT of (lvalue * exp)
+                    | LET of (dec list * exp list)
+
+    and
+
+    dec = TYPE of (ID * ty)
+        | VARDEC of (ID * exp)
+
+    and
+
+    ty  = TYPEID of ID
 
     and
 

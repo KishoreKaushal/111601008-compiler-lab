@@ -3,11 +3,12 @@ state 0:
 
 	init : . program 
 
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
 
-	init	goto 24
+	init	goto 43
 	program	goto 3
 	exp	goto 2
 	lvalue	goto 1
@@ -21,9 +22,9 @@ state 1:
 	lvalue : lvalue . DOT ID 
 	lvalue : lvalue . LBRACK exp RBRACK 
 
-	ASSIGN	shift 9
-	DOT	shift 8
-	LBRACK	shift 7
+	ASSIGN	shift 10
+	DOT	shift 9
+	LBRACK	shift 8
 
 
 	.	error
@@ -37,11 +38,11 @@ state 2:
 	exp : exp . TIMES exp 
 	exp : exp . DIVIDE exp 
 
-	SEMICOLON	shift 14
-	PLUS	shift 13
-	MINUS	shift 12
-	TIMES	shift 11
-	DIVIDE	shift 10
+	SEMICOLON	shift 15
+	PLUS	shift 14
+	MINUS	shift 13
+	TIMES	shift 12
+	DIVIDE	shift 11
 
 
 	.	error
@@ -58,14 +59,27 @@ state 3:
 
 state 4:
 
-	lvalue : ID .  (reduce by rule 10)
+	exp : LET . decs IN exps END 
 
+	TYPE	shift 19
+	VAR	shift 18
 
+	decs	goto 17
+	dec	goto 16
 
-	.	reduce by rule 10
+	.	reduce by rule 11
 
 
 state 5:
+
+	lvalue : ID .  (reduce by rule 19)
+
+
+
+	.	reduce by rule 19
+
+
+state 6:
 
 	exp : STRING .  (reduce by rule 8)
 
@@ -74,7 +88,7 @@ state 5:
 	.	reduce by rule 8
 
 
-state 6:
+state 7:
 
 	exp : INT .  (reduce by rule 3)
 
@@ -83,79 +97,14 @@ state 6:
 	.	reduce by rule 3
 
 
-state 7:
+state 8:
 
 	lvalue : lvalue LBRACK . exp RBRACK 
 
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
-
-	exp	goto 15
-	lvalue	goto 1
-
-	.	error
-
-
-state 8:
-
-	lvalue : lvalue DOT . ID 
-
-	ID	shift 16
-
-
-	.	error
-
-
-state 9:
-
-	exp : lvalue ASSIGN . exp 
-
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
-
-	exp	goto 17
-	lvalue	goto 1
-
-	.	error
-
-
-state 10:
-
-	exp : exp DIVIDE . exp 
-
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
-
-	exp	goto 18
-	lvalue	goto 1
-
-	.	error
-
-
-state 11:
-
-	exp : exp TIMES . exp 
-
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
-
-	exp	goto 19
-	lvalue	goto 1
-
-	.	error
-
-
-state 12:
-
-	exp : exp MINUS . exp 
-
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
 
 	exp	goto 20
 	lvalue	goto 1
@@ -163,15 +112,71 @@ state 12:
 	.	error
 
 
+state 9:
+
+	lvalue : lvalue DOT . ID 
+
+	ID	shift 21
+
+
+	.	error
+
+
+state 10:
+
+	exp : lvalue ASSIGN . exp 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 22
+	lvalue	goto 1
+
+	.	error
+
+
+state 11:
+
+	exp : exp DIVIDE . exp 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 23
+	lvalue	goto 1
+
+	.	error
+
+
+state 12:
+
+	exp : exp TIMES . exp 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 24
+	lvalue	goto 1
+
+	.	error
+
+
 state 13:
 
-	exp : exp PLUS . exp 
+	exp : exp MINUS . exp 
 
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
 
-	exp	goto 21
+	exp	goto 25
 	lvalue	goto 1
 
 	.	error
@@ -179,20 +184,79 @@ state 13:
 
 state 14:
 
+	exp : exp PLUS . exp 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 26
+	lvalue	goto 1
+
+	.	error
+
+
+state 15:
+
 	program : exp SEMICOLON . program 
 
-	INT	shift 6
-	STRING	shift 5
-	ID	shift 4
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
 
-	program	goto 22
+	program	goto 27
 	exp	goto 2
 	lvalue	goto 1
 
 	.	reduce by rule 1
 
 
-state 15:
+state 16:
+
+	decs : dec . decs 
+
+	TYPE	shift 19
+	VAR	shift 18
+
+	decs	goto 28
+	dec	goto 16
+
+	.	reduce by rule 11
+
+
+state 17:
+
+	exp : LET decs . IN exps END 
+
+	IN	shift 29
+
+
+	.	error
+
+
+state 18:
+
+	dec : VAR . ID ASSIGN exp 
+
+	ID	shift 30
+
+
+	.	error
+
+
+state 19:
+
+	dec : TYPE . ID EQ ty 
+
+	ID	shift 31
+
+
+	.	error
+
+
+state 20:
 
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
@@ -200,26 +264,26 @@ state 15:
 	exp : exp . DIVIDE exp 
 	lvalue : lvalue LBRACK exp . RBRACK 
 
-	PLUS	shift 13
-	MINUS	shift 12
-	TIMES	shift 11
-	DIVIDE	shift 10
-	RBRACK	shift 23
+	PLUS	shift 14
+	MINUS	shift 13
+	TIMES	shift 12
+	DIVIDE	shift 11
+	RBRACK	shift 32
 
 
 	.	error
 
 
-state 16:
+state 21:
 
-	lvalue : lvalue DOT ID .  (reduce by rule 11)
-
-
-
-	.	reduce by rule 11
+	lvalue : lvalue DOT ID .  (reduce by rule 20)
 
 
-state 17:
+
+	.	reduce by rule 20
+
+
+state 22:
 
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
@@ -232,7 +296,7 @@ state 17:
 	.	reduce by rule 9
 
 
-state 18:
+state 23:
 
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
@@ -240,14 +304,14 @@ state 18:
 	exp : exp . DIVIDE exp 
 	exp : exp DIVIDE exp .  (reduce by rule 7)
 
-	PLUS	shift 13
-	MINUS	shift 12
+	PLUS	shift 14
+	MINUS	shift 13
 
 
 	.	reduce by rule 7
 
 
-state 19:
+state 24:
 
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
@@ -255,14 +319,14 @@ state 19:
 	exp : exp TIMES exp .  (reduce by rule 6)
 	exp : exp . DIVIDE exp 
 
-	PLUS	shift 13
-	MINUS	shift 12
+	PLUS	shift 14
+	MINUS	shift 13
 
 
 	.	reduce by rule 6
 
 
-state 20:
+state 25:
 
 	exp : exp . PLUS exp 
 	exp : exp . MINUS exp 
@@ -275,7 +339,7 @@ state 20:
 	.	reduce by rule 5
 
 
-state 21:
+state 26:
 
 	exp : exp . PLUS exp 
 	exp : exp PLUS exp .  (reduce by rule 4)
@@ -288,7 +352,7 @@ state 21:
 	.	reduce by rule 4
 
 
-state 22:
+state 27:
 
 	program : exp SEMICOLON program .  (reduce by rule 2)
 
@@ -297,16 +361,185 @@ state 22:
 	.	reduce by rule 2
 
 
-state 23:
+state 28:
 
-	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 12)
+	decs : dec decs .  (reduce by rule 12)
 
 
 
 	.	reduce by rule 12
 
 
-state 24:
+state 29:
+
+	exp : LET decs IN . exps END 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 34
+	lvalue	goto 1
+	exps	goto 33
+
+	.	reduce by rule 16
+
+
+state 30:
+
+	dec : VAR ID . ASSIGN exp 
+
+	ASSIGN	shift 35
+
+
+	.	error
+
+
+state 31:
+
+	dec : TYPE ID . EQ ty 
+
+	EQ	shift 36
+
+
+	.	error
+
+
+state 32:
+
+	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 21)
+
+
+
+	.	reduce by rule 21
+
+
+state 33:
+
+	exp : LET decs IN exps . END 
+
+	END	shift 37
+
+
+	.	error
+
+
+state 34:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	exps : exp .  (reduce by rule 17)
+	exps : exp . SEMICOLON exps 
+
+	SEMICOLON	shift 38
+	PLUS	shift 14
+	MINUS	shift 13
+	TIMES	shift 12
+	DIVIDE	shift 11
+
+
+	.	reduce by rule 17
+
+
+state 35:
+
+	dec : VAR ID ASSIGN . exp 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 39
+	lvalue	goto 1
+
+	.	error
+
+
+state 36:
+
+	dec : TYPE ID EQ . ty 
+
+	ID	shift 41
+
+	ty	goto 40
+
+	.	error
+
+
+state 37:
+
+	exp : LET decs IN exps END .  (reduce by rule 10)
+
+
+
+	.	reduce by rule 10
+
+
+state 38:
+
+	exps : exp SEMICOLON . exps 
+
+	INT	shift 7
+	STRING	shift 6
+	ID	shift 5
+	LET	shift 4
+
+	exp	goto 34
+	lvalue	goto 1
+	exps	goto 42
+
+	.	reduce by rule 16
+
+
+state 39:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	dec : VAR ID ASSIGN exp .  (reduce by rule 14)
+
+	PLUS	shift 14
+	MINUS	shift 13
+	TIMES	shift 12
+	DIVIDE	shift 11
+
+
+	.	reduce by rule 14
+
+
+state 40:
+
+	dec : TYPE ID EQ ty .  (reduce by rule 13)
+
+
+
+	.	reduce by rule 13
+
+
+state 41:
+
+	ty : ID .  (reduce by rule 15)
+
+
+
+	.	reduce by rule 15
+
+
+state 42:
+
+	exps : exp SEMICOLON exps .  (reduce by rule 18)
+
+
+
+	.	reduce by rule 18
+
+
+state 43:
 
 
 	EOF	accept
@@ -314,5 +547,5 @@ state 24:
 
 	.	error
 
-25 of 68 action table entries left after compaction
-19 goto table entries
+49 of 127 action table entries left after compaction
+32 goto table entries

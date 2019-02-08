@@ -5,13 +5,20 @@
 	| STRING of string
 	| ID of string
 	| PLUS | MINUS | TIMES | DIVIDE
+	| EQ
 	| ASSIGN | DOT | LBRACK | RBRACK
+	| LET | IN | END | TYPE | VAR
 
 %nonterm 	init		of Ast.exp list
-		| 	program  	of  Ast.exp list
-        | 	exp     	of  Ast.exp
+		| 	program  	of Ast.exp list
+        | 	exp     	of Ast.exp
 		|	lvalue		of Ast.lvalue
+		|	decs		of Ast.dec list
+		|	exps 		of Ast.exp list
+		|	ty			of Ast.ty
+		|	dec 		of Ast.dec
 
+%keyword LET IN END TYPE
 
 %pos int
 %verbose
@@ -20,18 +27,20 @@
 %eop EOF
 %noshift EOF
 
+%left SEMICOLON
 %left TIMES DIVIDE
 %left PLUS MINUS
+%nonassoc EQ
 %left ASSIGN
 
 %name Tiger
 
 %%
 
-init	: program				(program)
+init	: 	program					(program)
 
-program	:						([])
-		| exp SEMICOLON program	(exp::program)
+program	:							([])
+		| 	exp SEMICOLON program	(exp::program)
 
 exp     :   INT                     (Ast.INT(INT))
         |   exp PLUS exp            (Ast.BINOP(exp1,Ast.PLUS,exp2))
@@ -40,6 +49,19 @@ exp     :   INT                     (Ast.INT(INT))
 		|	exp DIVIDE exp			(Ast.BINOP(exp1,Ast.DIVIDE,exp2))
 		|	STRING					(Ast.STRING(STRING))
 		|	lvalue ASSIGN exp		(Ast.ASSIGNMENT(lvalue , exp))
+		|	LET decs IN exps END	(Ast.LET(decs , exps))
+
+decs	:							([])
+		|	dec decs				(dec::decs)
+
+dec 	:	TYPE ID EQ ty			(Ast.TYPE(ID , ty))
+		|	VAR ID ASSIGN exp		(Ast.VARDEC(ID, exp))
+
+ty		:	ID						(Ast.TYPEID(ID))
+
+exps 	:							([])
+		|	exp 					(exp)
+		|	exp SEMICOLON exps 		(exp::exps)
 
 lvalue	:	ID						(Ast.LVAL_IDEN(ID))
 		|	lvalue DOT ID			(Ast.FIELD (lvalue,ID))

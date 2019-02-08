@@ -2,10 +2,16 @@ signature Tiger_TOKENS =
 sig
 type ('a,'b) token
 type svalue
+val VAR:  'a * 'a -> (svalue,'a) token
+val TYPE:  'a * 'a -> (svalue,'a) token
+val END:  'a * 'a -> (svalue,'a) token
+val IN:  'a * 'a -> (svalue,'a) token
+val LET:  'a * 'a -> (svalue,'a) token
 val RBRACK:  'a * 'a -> (svalue,'a) token
 val LBRACK:  'a * 'a -> (svalue,'a) token
 val DOT:  'a * 'a -> (svalue,'a) token
 val ASSIGN:  'a * 'a -> (svalue,'a) token
+val EQ:  'a * 'a -> (svalue,'a) token
 val DIVIDE:  'a * 'a -> (svalue,'a) token
 val TIMES:  'a * 'a -> (svalue,'a) token
 val MINUS:  'a * 'a -> (svalue,'a) token
