@@ -1,0 +1,601 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Made with Remarkable!
+  </title>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/github.min.css" rel="stylesheet"/>
+  <style type="text/css">
+   @import url(http://fonts.googleapis.com/css?family=Vollkorn:400,400italic,700,700italic&subset=latin);ol,ul{padding-left:1.2em}body,code,html{background:#fff}body,h1 a,h1 a:hover{color:#333}a,h1 a,h1 a:hover{text-decoration:none}hr,video{margin:2em 0}h1,h2,p#heart{text-align:center}table tr td,table tr th{border:1px solid #ccc;text-align:left;padding:6px 13px;margin:0}h1,p,table tr td :first-child,table tr th :first-child{margin-top:0}pre code,table,table tr{padding:0}body,html{padding:1em;margin:auto}body{font:1.3em Vollkorn,Palatino,Times;line-height:1;text-align:justify}h1,h2,h3{font-weight:400}h3,nav{font-style:italic}code,nav{font-size:.9em}article,footer,header,nav{margin:0 auto}article{margin-top:4em;margin-bottom:4em;min-height:400px}footer{margin-bottom:50px}video{border:1px solid #ddd}nav{border-bottom:1px solid #ddd;padding:1em 0}nav p{margin:0}p{-webkit-hypens:auto;-moz-hypens:auto;hyphens:auto}ul{list-style:square}blockquote{margin-left:1em;padding-left:1em;border-left:1px solid #ddd}code{font-family:Consolas,Menlo,Monaco,monospace,serif}a{color:#2484c1}a:hover{text-decoration:underline}a img{border:0}hr{color:#ddd;height:1px;border-top:solid 1px #ddd;border-bottom:0;border-left:0;border-right:0}p#heart{font-size:2em;line-height:1;color:#ccc}.red{color:#b50000}body#index li{margin-bottom:1em}@media only screen and (max-device-width:1024px){body{font-size:120%;line-height:1.4}}@media only screen and (max-device-width:480px){body{text-align:left}article,footer{width:auto}article{padding:0 10px}}table tr{border-top:1px solid #ccc;background-color:#fff;margin:0}table tr:nth-child(2n){background-color:#aaa}table tr th{font-weight:700}table tr td:last-child,table tr th :last-child{margin-bottom:0}img{max-width:100%}code,tt{margin:0 2px;padding:0 5px;white-space:nowrap;border:1px solid #eaeaea;background-color:#f8f8f8;border-radius:3px}pre code{margin:0;white-space:pre;border:none;background:0 0}.highlight pre,pre{background-color:#f8f8f8;border:1px solid #ccc;font-size:13px;line-height:19px;overflow:auto;padding:6px 10px;border-radius:3px}
+  </style>
+ </head>
+ <body>
+  <h1 id="parsing">
+   Parsing
+  </h1>
+  <h2 id="context-free-grammars">
+   Context-free Grammars
+  </h2>
+  <p>
+   A
+   <em>
+    language
+   </em>
+   is a set of
+   <em>
+    strings
+   </em>
+   ; each string is a finite sequence of
+   <em>
+    symbols
+   </em>
+   taken from a finite
+   <em>
+    alphabet
+   </em>
+   . For parsing, the srings are source programs, the symbols are lexical tokens, and the alphabet is the set of token types returned by the lexical analyzer.
+  </p>
+  <p>
+   A
+   <strong>
+    CFG
+   </strong>
+   grammar describes a language. A grammar has a set of
+   <em>
+    productions
+   </em>
+   of the form:
+  </p>
+  <ul>
+   <li>
+    <em>
+     symbol
+    </em>
+    –&gt;
+    <em>
+     symbol
+    </em>
+    <em>
+     symbol
+    </em>
+    …
+    <em>
+     symbol
+    </em>
+   </li>
+  </ul>
+  <p>
+   where there are zero or more symbols on the right-hand side. Each symbol is either
+   <em>
+    terminal
+   </em>
+   , meaning that it is a token from the alphabet of strings in the language, or
+   <em>
+    nonterminal
+   </em>
+   , meaning that it appears on the left-hand side of some production. No token can ever appear on the left-hand side of a production. Finally, one of the nonterminals is distinguished as the
+   <em>
+    start symbol
+   </em>
+   of the grammar.
+  </p>
+  <h3 id="derivations">
+   Derivations
+  </h3>
+  <p>
+   There are many different derivation of the same sentence. A
+   <em>
+    leftmost
+   </em>
+   derivation is one in which the leftmost nonterminal symbol is always the one expanded; in a
+   <em>
+    rightmost
+   </em>
+   derivation, the rightmost nonterminal is always next to be expanded.
+  </p>
+  <h3 id="parse-trees">
+   Parse Trees
+  </h3>
+  <p>
+   A
+   <em>
+    parse tree
+   </em>
+   is made by connecting each symbol in a derivation to the one from which it was derived. Two
+   <em>
+    different
+   </em>
+   derivations can hace the same parse tree.
+  </p>
+  <h3 id="ambiguous-grammar">
+   Ambiguous Grammar
+  </h3>
+  <p>
+   A grammar is
+   <em>
+    ambiguous
+   </em>
+   if it can derive a sentence with two different parse trees. In compiler design we like to deal with
+   <em>
+    unambiguous
+   </em>
+   grammar or a grammar which can be easily transformed to
+   <em>
+    unambiguous
+   </em>
+   grammar.
+  </p>
+  <p>
+   The grammar given below grammar is ambiguous:
+  </p>
+  <p>
+   <img alt="Ambiguous Grammar" src="img/grammar35.png"/>
+  </p>
+  <p>
+   Let us find an unambiguous grammar that accepts the same language as above grammar.
+  </p>
+  <ol>
+   <li>
+    <code>
+     *
+    </code>
+    <em>
+     binds tighter
+    </em>
+    than
+    <code>
+     +
+    </code>
+    , or has
+    <strong>
+     higher precedence
+    </strong>
+    .
+   </li>
+   <li>
+    Each operator
+    <em>
+     associates to the left
+    </em>
+    .
+   </li>
+  </ol>
+  <p>
+   <img alt="Unambiguous Grammar" src="img/unambiguous.png"/>
+  </p>
+  <p>
+   Note: Not all ambiguous grammar can be converted to unambiguous grammar.
+  </p>
+  <h3 id="end-of-file-marker">
+   End-Of-File Marker
+  </h3>
+  <p>
+   We will use
+   <code>
+    $
+   </code>
+   to represent end of the file. Suppose
+   <code>
+    S
+   </code>
+   is the start symbol of the grammar. To indicate that
+   <code>
+    $
+   </code>
+   must come after a complete
+   <code>
+    S-phrase
+   </code>
+   , we augment the grammar with a new start symbol
+   <code>
+    S'
+   </code>
+   and a new production
+   <code>
+    S' --&gt; S$
+   </code>
+   .
+  </p>
+  <h2 id="predictive-parsing-recursive-descent">
+   Predictive Parsing - Recursive Descent
+  </h2>
+  <p>
+   Some grammars are easy to parse using a simple algorithm known as recursive descent. In essence, each grammar production turns into one clause of a recursive function. A recursive-descent parser for the language given below has one function for each non-terminal and one clause for each production.
+  </p>
+  <p>
+   <img alt="" src="img/predictiveParsingGrm.png"/>
+  </p>
+  <pre><code>datatype token  = IF
+                | THEN
+                | ELSE
+                | BEGIN
+                | END 
+                | PRINT
+                | SEMI 
+                | NUM
+                | EQ
+
+val tok = ref (getToken())
+
+fun advance() = tok := getToken()
+
+fun eat(t) = if (!tok = t) then
+                advance()
+            else error()
+
+fun S() = case !tok
+            of IF =&gt; (eat(IF); E();
+                        eat(THEN);
+                        S();
+                        eat(ELSE);
+                        S())
+            | BEGIN =&gt; (eat(BEGIN);
+                        S(); L())
+            | PRINT =&gt; (eat(PRINT); E())
+and L() = case !tok
+            of END =&gt; (eat(END))
+            | SEMI =&gt; (eat(SEMI); S(); L())
+and E() = (eat(NUM); eat(EQ); eat(NUM))
+</code></pre>
+  <p>
+   With suitable definitions of
+   <code>
+    error
+   </code>
+   and
+   <code>
+    getToken
+   </code>
+   , this program will parse very nicely.
+  </p>
+  <p>
+   Let us try it with
+   <em>
+    unabiguous
+   </em>
+   grammar given in previous section.
+  </p>
+  <pre><code>fun S() = (E(); eat(EOF))
+and E() = case !tok 
+       of ? =&gt; (E(); eat(PLUS); T())
+       |  ? =&gt; (T(); eat(MINUS); T())
+       |  ? =&gt; (T())
+and T() = case !tok
+       of ? =&gt; (T(); eat(TIMES); F())
+       |  ? =&gt; (T(); eat(DIV); F())
+       |  ? =&gt; (F())
+and F() = case !tok
+       of ID =&gt; (eat(ID))
+       |  NUM =&gt; (eat(NUM))
+       |  LPAREN =&gt; (eat(LPAREN); E(); eat(RPAREN))
+</code></pre>
+  <p>
+   There is a
+   <em>
+    conflict
+   </em>
+   here: the
+   <code>
+    E
+   </code>
+   function has no way to know which clause to use. Consider the strings
+   <code>
+    (1*2-3)+4
+   </code>
+   and
+   <code>
+    (1*2-3)
+   </code>
+   . In the former case, the initial call to
+   <code>
+    E
+   </code>
+   should use the
+   <code>
+    E -&gt; E + T
+   </code>
+   production, but the latter case should use
+   <code>
+    E -&gt; T
+   </code>
+   .
+  </p>
+  <p>
+   Recursive-descent, or
+   <em>
+    predictive
+   </em>
+   , parsing works only on grammars where the
+   <em>
+    first terminal symbol
+   </em>
+   of each subexpression provides enough information to choose which production to use. To understand this better, we will formalize the notion of
+   <strong>
+    FIRST
+   </strong>
+   sets, and then derive conflict-free recursive-descent parsers using a simple algorithm.
+  </p>
+  <h2 id="first-follow-sets">
+   First &amp; Follow Sets
+  </h2>
+  <p>
+   Given a string
+   <strong>
+    𝛾
+   </strong>
+   of terminal and nonterminal symbols,
+   <strong>
+    FIRST(𝛾)
+   </strong>
+   is the set of all terminal symbols that can begin any string derived from 𝛾. eg., FIRST(𝛾) = { id, num, ( }
+  </p>
+  <p>
+   If two different productions
+   <strong>
+    X -&gt; 𝛾
+    <sub>
+     1
+    </sub>
+   </strong>
+   and
+   <strong>
+    X -&gt; 𝛾
+    <sub>
+     2
+    </sub>
+   </strong>
+   have the same left-hand-side symbol (X) and their right-hand sides have
+   <strong>
+    overlapping FIRST sets
+   </strong>
+   , then grammar cannot be parsed using predictive parsing.
+  </p>
+  <p>
+   Consider following grammar:
+  </p>
+  <p>
+   <img alt="" src="img/grm312.png"/>
+  </p>
+  <p>
+   If
+   <em>
+    𝛾 = X Y Z
+   </em>
+   , then it seems FIRST(𝛾) is FIRST(X) but accounting the fact that X and Y are symbols which can produce empty string - we find that FIRST(XYZ) must include FIRST(Z).
+  </p>
+  <p>
+   Hence, FIRST(𝛾) = FIRST(X) ∪ FIRST(Y) ∪ FIRST(Z)
+  </p>
+  <p>
+   With respect to a particular grammar, given a string 𝛾 of terminals and nonterminals,
+  </p>
+  <ul>
+   <li>
+    nullable(X) is true if X can derive the empty string.
+   </li>
+   <li>
+    FIRST(𝛾) is the set of terminals that can begin strings derived from 𝛾.
+   </li>
+   <li>
+    FOLLOW(X) is the set of terminals that can immediately follow X. That is, t ∊ FOLLOW(X) if there is any derivation containing Xt. This can occur if the derivation contains XYZt where Y and Z both derive ϵ.
+   </li>
+  </ul>
+  <h3 id="precise-definition-of-first-follow-and-nullable">
+   Precise definition of FIRST, FOLLOW, and nullable
+  </h3>
+  <p>
+   A precise definition of FIRST, FOLLOW and nullable is that they are the smallest sets for which these properties hold:
+  </p>
+  <pre><code>for each terminal symbol Z, FIRST[Z] = {Z}
+for each production X -&gt; Y1 Y2 ... Yk
+    if Y1 Y2 ... Yk are all nullable (or if k = 0)
+        then nullable[X] = true
+    for each i from 1 to k, each j from i+1 to k
+        if Y1 ... Y(i-1) are all nullable (or if i = 1)
+            then FIRST[X] = FIRST[X] ∪ FIRST[Yi]
+        if Y(i+1) ... Yk are all nullable (or if i = k)
+            then FOLLOW[Yi] = FOLLOW[Yi] ∪ FOLLOW[X]
+        if Y(i+1) ... Y(j-1) are all nullable (or if i + 1 = j)
+            then FOLLOW[Yi] = FOLLOW[Yi] ∪ FIRST[Yj]
+</code></pre>
+  <p>
+   Hence, algorithm to compute FIRST, FOLLOW and nullable can be derived from above rule.
+  </p>
+  <pre><code>INITIALIZE FIRST and FOLLOW to all empty sets, and nullable to all false.
+
+for each terminal symbol Z
+    FIRST[Z] &lt;- {Z}
+repeat
+    for each production X -&gt; Y1 Y2 ... Yk
+        if Y1 Y2 ... Yk are all nullable (or if k = 0)
+            then nullable[X] &lt;- true
+        for each i from 1 to k, each j from i+1 to k
+            if Y1 ... Y(i-1) are all nullable (or if i = 1)
+                then FIRST[X] &lt;- FIRST[X] ∪ FIRST[Yi]
+            if Y(i+1) ... Yk are all nullable (or if i = k)
+                then FOLLOW[Yi] &lt;- FOLLOW[Yi] ∪ FOLLOW[X]
+            if Y(i+1) ... Y(j-1) are all nullable (or if i + 1 = j)
+                then FOLLOW[Yi] &lt;- FOLLOW[Yi] ∪ FIRST[Yj]
+until FIRST, FOLLOW, and nullable did not change in this iteration.
+</code></pre>
+  <h2 id="constructing-a-predictive-parser">
+   Constructing a Predictive Parser
+  </h2>
+  <p>
+   Consider a recursive-descent parser. The parsing function for some nonterminal X has a clause for each X-production; it must choose one of these clauses based on the next token T of the input. If we can choose the right production for each (X,T), then we can write the recursice-descent-parser. All the information we need can be encoded as a two-dimensional table of productions, indexed by nonterminals X and terminals T. This is called a predictive parsing table.
+  </p>
+  <p>
+   To construct this table, enter production X -&gt; 𝛾 in row X, column T of the table for each T ∊ FIRST(𝛾). Also, if 𝛾 is nullable, enter the production in row X, column T for each T ∊ FOLLOW[X].
+  </p>
+  <p>
+   Consider the predictive parsing table for grammar discussed above:
+  </p>
+  <p>
+   <img alt="" src="img/predParsTbl.png"/>
+  </p>
+  <p>
+   Some of the entries contain more than one production. The presence of duplicate entries means that predictive parsing will not work on this grammar.
+  </p>
+  <p>
+   The above grammar is ambiguous. The sentence d has many parse trees, including:
+  </p>
+  <p>
+   <img alt="" src="img/parsTree.png"/>
+  </p>
+  <blockquote>
+   <p>
+    An ambiguous grammar will always lead to duplicate entries in a predictive parsing table. Grammars whose predictive parsing tables contain no duplicate entries are called
+    <strong>
+     LL(1)
+    </strong>
+    . This stands for
+    <em>
+     Left-to-right parese, Leftmost-derivation, 1-symbol lookahead
+    </em>
+    .
+   </p>
+  </blockquote>
+  <p>
+   The order in which a predictive parser expands nonterminals into right-hand sides is just the order in which a lefrmost derivation expands nonterminals. And a recursive descent parser does its job just by looking at the next token of the input, never looking more than one token ahead.
+  </p>
+  <p>
+   We can generalize the notion of FIRST sets to describe the first k tokens of a string, and to make an LL(k) parsing table whose rows are the nonterminals ans columns are every sequence of k terminals.
+  </p>
+  <blockquote>
+   <p>
+    No ambiguous grammar is LL(k) for any k.
+   </p>
+  </blockquote>
+  <h3 id="eliminating-left-recursion">
+   Eliminating left recursion
+  </h3>
+  <p>
+   <img alt="" src="img/grm310.png"/>
+  </p>
+  <p>
+   Suppose we want to build a predictive parser for above grammar. The two productions:
+  </p>
+  <pre><code>E -&gt; E + T
+E -&gt; T
+</code></pre>
+  <p>
+   are certain to cause duplicate entries in the LL(1) parsing table, since any token in FIRST(T) will also be in FIRST(E+T). The problem is that E appears as the first right-hand-side symbol in an E-production; this is called
+   <strong>
+    left recursion
+   </strong>
+   .
+  </p>
+  <blockquote>
+   <p>
+    <strong>
+     Grammars with left recursion cannot be LL(1).
+    </strong>
+   </p>
+  </blockquote>
+  <p>
+   To eliminate left recursion, we will rewrite using right recursion. We introduce a new nonterminal E’, and write
+  </p>
+  <pre><code>E -&gt; T E'
+
+E' -&gt; + T E'
+E' -&gt; ϵ
+</code></pre>
+  <p>
+   This derives the same set of strings (on T and +) as the original two productions, but now there is no left recursion.
+  </p>
+  <p>
+   In general, whenever we have productions X -&gt; X𝛾 and X -&gt; α where α does not start with X, we know that this derives strings of the form α𝛾*, an α followed by zero or more 𝛾. So we can reqrite the regular expression using right recursion:
+  </p>
+  <p>
+   <img alt="" src="img/rightRecursion.png"/>
+  </p>
+  <p>
+   Applying this transformation we obtain following grammar:
+  </p>
+  <p>
+   <img alt="" src="img/grm315.png"/>
+  </p>
+  <p>
+   To build a predictive parser, first we compute nullable, FIRST and FOLLOW.
+  </p>
+  <p>
+   <img alt="" src="img/nullFirstFoll315.png"/>
+  </p>
+  <p>
+   The predictive parser for this grammar is given below. We omit the columns for num, /, and -, as they are similar to others in the table.
+  </p>
+  <p>
+   <img alt="" src="img/predParseGrm315.png"/>
+  </p>
+  <h3 id="left-factoring">
+   Left Factoring
+  </h3>
+  <p>
+   We have seen that left recursion interferes with predictive parsing, and that it can be eliminated. A similar problem occurs when two productions for the same nonterminal start with the same symbols. For example:
+  </p>
+  <pre><code>S -&gt; if E then S else S
+S -&gt; if E then S
+</code></pre>
+  <p>
+   In such a case, we can left factor the grammar - that is, take the allowable endings (“else S” and ϵ) and make a new nonterminal X to stand for them:
+  </p>
+  <pre><code>S -&gt; if E then S X
+X -&gt; ϵ
+X -&gt; else S
+</code></pre>
+  <h2 id="lr-parsing">
+   LR Parsing
+  </h2>
+  <p>
+   The weakness of LL(k) parsing techniques is that they must predict which production to use, having seen only the first k tokens of the right-hand side. A more powerful technique, LR(k) parsing, is able to postpone the decision until it has seen input tokens corresponding to the entire right-hand side of the production in question (and k more input tokens beyond).
+  </p>
+  <p>
+   LR(k) stands for
+   <em>
+    Left-to-right parse, Rightmost-derivation, k-token lookahead
+   </em>
+   .
+  </p>
+  <p>
+   The parser has a stack and an input. The first k tokens of the input are the lookahead. Based on the contents of the stack and the lookahead, the parser performs two kinds of actions:
+  </p>
+  <ul>
+   <li>
+    <strong>
+     Shift:
+    </strong>
+    move the first input token to the top of the stack.
+   </li>
+   <li>
+    <strong>
+     Reduce:
+    </strong>
+    Choose a grammar rule X -&gt; A B C; pop C, B, A from the top of the stack; push X onto the stack.
+   </li>
+  </ul>
+  <p>
+   Initially, the stack is empty and the parser is at the beginning of the input. The action of shifting the end-of-file marker
+   <code>
+    $
+   </code>
+   is called accepting and causes the parser to stop successfully.
+  </p>
+  <h3 id="lr-parsing-engine">
+   LR Parsing Engine
+  </h3>
+  <p>
+   How does the LR parser know when to shift and when to reduce? By  using a deterministic finite automaton! The DFA is not applied to the input - finite automata are too weak to parse context-free grammars - but to the stack. The edges of the DFA are labeled by the symbols (terminals and nonterminals) that can appear on the stack.
+  </p>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js">
+  </script>
+  <script>
+   hljs.initHighlightingOnLoad();
+  </script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   MathJax.Hub.Config({"showProcessingMessages" : false,"messageStyle" : "none","tex2jax": { inlineMath: [ [ "$", "$" ] ] }});
+  </script>
+ </body>
+</html>

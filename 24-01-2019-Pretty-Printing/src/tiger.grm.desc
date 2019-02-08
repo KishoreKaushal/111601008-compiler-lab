@@ -1,0 +1,332 @@
+4 shift/reduce conflicts
+
+error:  state 17: shift/reduce conflict (shift DIVIDE, reduce by rule 9)
+error:  state 17: shift/reduce conflict (shift TIMES, reduce by rule 9)
+error:  state 17: shift/reduce conflict (shift MINUS, reduce by rule 9)
+error:  state 17: shift/reduce conflict (shift PLUS, reduce by rule 9)
+
+state 0:
+
+	init : . program 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	init	goto 24
+	program	goto 3
+	exp	goto 2
+	lvalue	goto 1
+
+	.	reduce by rule 1
+
+
+state 1:
+
+	exp : lvalue . ASSIGN exp 
+	lvalue : lvalue . DOT ID 
+	lvalue : lvalue . LBRACK exp RBRACK 
+
+	ASSIGN	shift 9
+	DOT	shift 8
+	LBRACK	shift 7
+
+
+	.	error
+
+
+state 2:
+
+	program : exp . SEMICOLON program 
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+
+	SEMICOLON	shift 14
+	PLUS	shift 13
+	MINUS	shift 12
+	TIMES	shift 11
+	DIVIDE	shift 10
+
+
+	.	error
+
+
+state 3:
+
+	init : program .  (reduce by rule 0)
+
+
+
+	.	reduce by rule 0
+
+
+state 4:
+
+	lvalue : ID .  (reduce by rule 10)
+
+
+
+	.	reduce by rule 10
+
+
+state 5:
+
+	exp : STRING .  (reduce by rule 8)
+
+
+
+	.	reduce by rule 8
+
+
+state 6:
+
+	exp : INT .  (reduce by rule 3)
+
+
+
+	.	reduce by rule 3
+
+
+state 7:
+
+	lvalue : lvalue LBRACK . exp RBRACK 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	exp	goto 15
+	lvalue	goto 1
+
+	.	error
+
+
+state 8:
+
+	lvalue : lvalue DOT . ID 
+
+	ID	shift 16
+
+
+	.	error
+
+
+state 9:
+
+	exp : lvalue ASSIGN . exp 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	exp	goto 17
+	lvalue	goto 1
+
+	.	error
+
+
+state 10:
+
+	exp : exp DIVIDE . exp 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	exp	goto 18
+	lvalue	goto 1
+
+	.	error
+
+
+state 11:
+
+	exp : exp TIMES . exp 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	exp	goto 19
+	lvalue	goto 1
+
+	.	error
+
+
+state 12:
+
+	exp : exp MINUS . exp 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	exp	goto 20
+	lvalue	goto 1
+
+	.	error
+
+
+state 13:
+
+	exp : exp PLUS . exp 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	exp	goto 21
+	lvalue	goto 1
+
+	.	error
+
+
+state 14:
+
+	program : exp SEMICOLON . program 
+
+	INT	shift 6
+	STRING	shift 5
+	ID	shift 4
+
+	program	goto 22
+	exp	goto 2
+	lvalue	goto 1
+
+	.	reduce by rule 1
+
+
+state 15:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	lvalue : lvalue LBRACK exp . RBRACK 
+
+	PLUS	shift 13
+	MINUS	shift 12
+	TIMES	shift 11
+	DIVIDE	shift 10
+	RBRACK	shift 23
+
+
+	.	error
+
+
+state 16:
+
+	lvalue : lvalue DOT ID .  (reduce by rule 11)
+
+
+
+	.	reduce by rule 11
+
+error:  state 17: shift/reduce conflict (shift DIVIDE, reduce by rule 9)
+error:  state 17: shift/reduce conflict (shift TIMES, reduce by rule 9)
+error:  state 17: shift/reduce conflict (shift MINUS, reduce by rule 9)
+error:  state 17: shift/reduce conflict (shift PLUS, reduce by rule 9)
+
+state 17:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	exp : lvalue ASSIGN exp .  (reduce by rule 9)
+
+	PLUS	shift 13
+	MINUS	shift 12
+	TIMES	shift 11
+	DIVIDE	shift 10
+
+
+	.	reduce by rule 9
+
+
+state 18:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+	exp : exp DIVIDE exp .  (reduce by rule 7)
+
+	PLUS	shift 13
+	MINUS	shift 12
+
+
+	.	reduce by rule 7
+
+
+state 19:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp TIMES exp .  (reduce by rule 6)
+	exp : exp . DIVIDE exp 
+
+	PLUS	shift 13
+	MINUS	shift 12
+
+
+	.	reduce by rule 6
+
+
+state 20:
+
+	exp : exp . PLUS exp 
+	exp : exp . MINUS exp 
+	exp : exp MINUS exp .  (reduce by rule 5)
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+
+
+
+	.	reduce by rule 5
+
+
+state 21:
+
+	exp : exp . PLUS exp 
+	exp : exp PLUS exp .  (reduce by rule 4)
+	exp : exp . MINUS exp 
+	exp : exp . TIMES exp 
+	exp : exp . DIVIDE exp 
+
+
+
+	.	reduce by rule 4
+
+
+state 22:
+
+	program : exp SEMICOLON program .  (reduce by rule 2)
+
+
+
+	.	reduce by rule 2
+
+
+state 23:
+
+	lvalue : lvalue LBRACK exp RBRACK .  (reduce by rule 12)
+
+
+
+	.	reduce by rule 12
+
+
+state 24:
+
+
+	EOF	accept
+
+
+	.	error
+
+29 of 72 action table entries left after compaction
+19 goto table entries
