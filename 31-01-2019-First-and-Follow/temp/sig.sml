@@ -133,15 +133,16 @@ fun initialize () = (   initialize_first_sym sym_list;
 val repeat : bool ref = ref true;
 val modified : bool ref = ref true;
 
-fun isNullable s = (AtomMap.lookup (!NULLABLE, s))
-fun isProductionNullable rhs = (all isNullable prods)
+fun isNullable s = (AtomMap.lookup (!NULLABLE, s));
+fun isProductionNullable rhs = (List.all isNullable rhs);
 
-while !repeat = true do (
+while (!repeat = true) do (
     modified := false;
+
     let
         val sym = ref (AtomMap.listKeys (#rules Grm));
     in
-        while !sym <> [] do (
+        while (!sym <> []) do (
             let
                 val x = hd(!sym);
                 val rhs = ref (AtomSet.listItems ( AtomMap.lookup((#rules Grm), x )))
@@ -152,11 +153,11 @@ while !repeat = true do (
                             let
                                 val t = (AtomMap.remove (!NULLABLE , x));
                             in
-                                if (#2 t) = false then
+                                if (#2 t) = false then (
                                     NULLABLE := (#1 t);
                                     NULLABLE := AtomMap.insert (!NULLABLE , x , true);
                                     modified := true
-                                else ()
+                                ) else ()
                             end
                         else    ();
 
@@ -166,7 +167,7 @@ while !repeat = true do (
                             val k = length(!rhs)
                         in
                             while !i < k do (
-                                if ((!i = 0) orelse (isProductionNullable (List.take (!rhs, !i - 1)))) then
+                                if ((!i = 0) orelse (isProductionNullable (List.take (!rhs, !i - 1)))) then (
                                     let
                                         val yi = List.nth(!rhs ,!i);
                                         val t = (AtomMap.remove (!FIRST , x));
@@ -176,13 +177,13 @@ while !repeat = true do (
                                         el :=  AtomSet.union(!el , AtomMap.lookup(!FIRST, yi));
                                         FIRST := AtomMap.insert (!FIRST , x , !el);
 
-                                        if (AtomSet.equal (!el , (#2 t))) = false then
+                                        if ((AtomSet.equal (!el , (#2 t))) = false) then
                                             modified := true    (* need check here *)
                                         else ()
-                                    end;
-                                else ();
+                                    end
+                                ) else ();
 
-                                if ((!i = k-1) orelse (isProductionNullable (List.drop (!rhs, !i)))) then
+                                if ((!i = k-1) orelse (isProductionNullable (List.drop (!rhs, !i)))) then (
                                     let
                                         val yi = List.nth(!rhs , !i);
                                         val t = (AtomMap.remove (!FOLLOW , yi));
@@ -190,17 +191,17 @@ while !repeat = true do (
                                     in
                                         FOLLOW := !mp;
                                         el :=  AtomSet.union(!el ,  AtomMap.lookup (!FOLLOW , x));
-                                        FOLLOW := AtomMap.insert (!FOLLOW , yi , !el)
+                                        FOLLOW := AtomMap.insert (!FOLLOW , yi , !el);
 
-                                        if (AtomSet.equal (!el , (#2 t))) = false then
+                                        if ((AtomSet.equal (!el , (#2 t))) = false) then
                                             modified := true    (* need check here *)
                                         else ()
-                                    end;
-                                else ();
+                                    end
+                                ) else ();
 
                                 j := !i + 1;
                                 while !j < k do (
-                                    if ((!i + 1 = !j) orelse (isProductionNullable ( List.drop(List.take(!rhs , !j - 1) , !i) ))) then
+                                    if ((!i + 1 = !j) orelse (isProductionNullable ( List.drop(List.take(!rhs , !j - 1) , !i) ))) then (
                                         let
                                             val yj = List.nth(!rhs, !j);
                                             val yi = List.nth(!rhs , !i);
@@ -211,11 +212,11 @@ while !repeat = true do (
                                             el :=  AtomSet.union(!el , AtomMap.lookup(!FIRST, yj));
                                             FOLLOW := AtomMap.insert (!FOLLOW , yi , !el);
 
-                                            if (AtomSet.equal (!el , (#2 t))) = false then
+                                            if ((AtomSet.equal (!el , (#2 t))) = false) then
                                                 modified := true    (* need check here *)
                                             else ()
-                                        end;
-                                    else ();
+                                        end
+                                    ) else ();
 
                                     j := !j + 1
                                 );
