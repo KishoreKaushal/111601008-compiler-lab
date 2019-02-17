@@ -85,6 +85,9 @@ val Grm : Grammar = {
     rules = !rul
 }
 
+val sym_list = AtomSet.listItems (#symbols Grm)
+val tok_list = AtomSet.listItems (#tokens Grm)
+
 val FIRST : AtomSet.set AtomMap.map ref = ref AtomMap.empty;
 val FOLLOW : AtomSet.set AtomMap.map ref = ref AtomMap.empty;
 val NULLABLE : bool AtomMap.map ref = ref AtomMap.empty;
@@ -96,53 +99,61 @@ val NULLABLE : bool AtomMap.map ref = ref AtomMap.empty;
 
 (* Initializing FIRST, FOLLOW & NULLABLE *)
 
-fun initialize_first_sym [] = ()
-|   initialize_first_sym (y::sym_list) = (
-        FIRST := AtomMap.insert (!FIRST , y , AtomSet.empty);
-        initialize_first_sym sym_list
+fun initialize_first_tok [] = ()
+|   initialize_first_tok (y::tok_l) = (
+        FIRST := AtomMap.insert (!FIRST , y , AtomSet.singleton(y));
+        initialize_first_tok tok_l
     )
 
-fun initialize_first_tok [] = ()
-|   initialize_first_tok (y::tok_list) = (
-        FIRST := AtomMap.insert (!FIRST , y , AtomSet.singleton(y));
-        initialize_first_tok tok_list
+fun initialize_first_sym [] = ()
+|   initialize_first_sym (y::sym_l) = (
+        FIRST := AtomMap.insert (!FIRST , y , AtomSet.empty);
+        initialize_first_sym sym_l
     )
 
 fun initialize_follow [] = ()
-|   initialize_follow (y::sym_list) = (
+|   initialize_follow (y::sym_l) = (
         FOLLOW := AtomMap.insert (!FOLLOW , y , AtomSet.empty);
-        initialize_follow sym_list
+        initialize_follow sym_l
     )
 
 fun initialize_nullable [] = ()
-|   initialize_nullable (y::sym_list) = (
+|   initialize_nullable (y::sym_l) = (
         NULLABLE := AtomMap.insert (!NULLABLE , y , false);
-        initialize_nullable sym_list
+        initialize_nullable sym_l
     )
 
-
-fun initialize () = let
-                        val sym_list = AtomSet.listItems (#symbols Grm)
-                        val tok_list = AtomSet.listItems (#tokens Grm)
-                    in
-                        (   initialize_first_sym sym_list;
-                            initialize_first_tok tok_list;
-                            initialize_follow sym_list;
-                            initialize_nullable sym_list )
-                    end
-
+fun initialize () = (   initialize_first_sym sym_list;
+                        initialize_first_tok tok_list;
+                        initialize_follow sym_list;
+                        initialize_nullable sym_list )
 
 (* Loop Until the FIRST , FOLLOW and NULLABLE converges *)
-
-
 
 val repeat : bool ref = ref true;
 val modified : bool ref = ref true;
 
 while !repeat = true do (
     modified := false;
+    let
+        val sym = ref (AtomMap.listKeys (#rules Grm));
+    in
+        while !sym <> [] do (
+            let
+                val prods = ref (AtomSet.listItems ( AtomMap.lookup((#rules Grm), hd(!sym)) ))
+            in
+                while !prods <> [] do (
+                        (* For each Production *)
+                        if (check_nullable (!prods)) = true then
 
-
+                    ;
+                    prods := tl(!prods)
+                )
+            end
+            ;
+            sym := tl(!sym)
+        )
+    end;
 
     if (!modified = true) then
         repeat := true
