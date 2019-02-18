@@ -129,16 +129,6 @@ fun initialize () = (   initialize_first_sym sym_list;
                         initialize_follow sym_list;
                         initialize_nullable sym_list );
 
-
-initialize ();
-
-(* Loop Until the FIRST , FOLLOW and NULLABLE converges *)
-
-val repeat : bool ref = ref true;
-val modified : bool ref = ref true;
-val itr : int ref = ref 0;
-
-
 fun isNullable s = (AtomMap.lookup (!NULLABLE, s) handle NotFound => false);
 fun isProductionNullable rhs = (List.all isNullable rhs);
 
@@ -192,9 +182,17 @@ printNullable ();
 printFirst ();
 printFollow ();
 
+val repeat : bool ref = ref true;
+val modified : bool ref = ref true;
+(* val itr : int ref = ref 0; *)
+
+initialize ();
+
+(* Loop Until the FIRST , FOLLOW and NULLABLE converges *)
+
 while (!repeat = true) do (
-    itr := !itr + 1;
-    print (Int.toString(!itr) ^ "\n");
+    (* itr := !itr + 1;
+    print (Int.toString(!itr) ^ "\n"); *)
 
     modified := false;
 
@@ -234,10 +232,10 @@ while (!repeat = true) do (
                             val k = length(!rhs)
                         in
                             while !i < k do (
-                                if ((!i = 0) orelse (isProductionNullable (List.take (!rhs, !i - 1)))) then (
+                                if ((!i = 0) orelse (isProductionNullable (List.take (!rhs, !i )))) then (
                                     let
                                         val yi = List.nth(!rhs ,!i);
-                                        val t = ((AtomMap.remove (!FIRST , x)) handle LibBase.NotFound => (AtomMap.empty, AtomSet.empty));
+                                        val t = ((AtomMap.remove (!FIRST , x)) handle LibBase.NotFound => (!FIRST, AtomSet.empty));
                                         val (mp , el) = (ref (#1 t ) , ref (#2 t))
                                     in
                                         FIRST := !mp;
@@ -250,15 +248,22 @@ while (!repeat = true) do (
                                     end
                                 ) else ();
 
-                                if ((!i = k-1) orelse (isProductionNullable (List.drop (!rhs, !i)))) then (
+                                if ((!i = k-1) orelse (isProductionNullable (List.drop (!rhs, !i + 1)))) then (
                                     let
                                         val yi = List.nth(!rhs , !i);
-                                        val t = (AtomMap.remove (!FOLLOW , yi) handle LibBase.NotFound => (AtomMap.empty, AtomSet.empty));
+                                        val t = (AtomMap.remove (!FOLLOW , yi) handle LibBase.NotFound => (!FOLLOW, AtomSet.empty));
                                         val (mp , el) = (ref (#1 t ) , ref (#2 t))
                                     in
                                         FOLLOW := !mp;
+                                        (* print ("follow on removing : " ^ (Atom.toString yi));
+                                        printFollow(); *)
+
                                         el :=  AtomSet.union(!el ,  AtomMap.lookup (!FOLLOW , x) handle NotFound => AtomSet.empty);
                                         FOLLOW := AtomMap.insert (!FOLLOW , yi , !el);
+
+                                        (* print ("follow on inserting : " ^ (Atom.toString yi));
+                                        printFollow(); *)
+
 
                                         if ((AtomSet.equal (!el , (#2 t))) = false) then
                                             modified := true    (* need check here *)
@@ -266,13 +271,13 @@ while (!repeat = true) do (
                                     end
                                 ) else ();
 
-                                (* j := !i + 1;
+                                j := !i + 1;
                                 while !j < k do (
-                                    if ((!i + 1 = !j) orelse (isProductionNullable ( List.drop(List.take(!rhs , !j - 1) , !i) ))) then (
+                                    if ((!i + 1 = !j) orelse (isProductionNullable ( List.drop(List.take(!rhs , !j ) , !i + 1) ))) then (
                                         let
                                             val yj = List.nth(!rhs, !j);
                                             val yi = List.nth(!rhs , !i);
-                                            val t = (AtomMap.remove (!FOLLOW , yi) handle LibBase.NotFound => (AtomMap.empty, AtomSet.empty));
+                                            val t = (AtomMap.remove (!FOLLOW , yi) handle LibBase.NotFound => (!FOLLOW, AtomSet.empty));
                                             val (mp , el) = (ref (#1 t ) , ref (#2 t))
                                         in
                                             FOLLOW := !mp;
@@ -286,7 +291,7 @@ while (!repeat = true) do (
                                     ) else ();
 
                                     j := !j + 1
-                                ); *)
+                                );
                                 i := !i + 1
                             )
                         end
