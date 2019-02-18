@@ -145,6 +145,8 @@ fun isProductionNullable rhs = (List.all isNullable rhs);
 fun printAtomList (x::xs) = (print ((Atom.toString(x)) ^ " " ); printAtomList xs)
 |   printAtomList []    = (print "\n");
 
+fun printAtomSet at_set = (printAtomList(AtomSet.listItems(at_set)))
+
 fun printNullableHelper [] = (print "=== ======== ===\n")
 |   printNullableHelper (x::xs) = (let
                                     val (k , v) = x
@@ -161,8 +163,34 @@ fun printNullable () =  (let
                         end);
 
 
-print ("NULLABLE in the beginning: ");
+
+fun printFirstFollowHelper [] =  (print "=== ======== ===\n")
+|   printFirstFollowHelper (x::xs) = (let
+                                        val (k , v) = x
+                                    in
+                                        (print ((Atom.toString k) ^ " : " );
+                                        printAtomSet(v);
+                                        printFirstFollowHelper xs)
+                                    end);
+
+fun printFollow () = (let
+                            val follow_lst = AtomMap.listItemsi (!FOLLOW)
+                        in
+                            (print ("\n=== FOLLOW ===\n");
+                            printFirstFollowHelper follow_lst)
+                        end);
+
+fun printFirst () = (let
+                            val first_lst = AtomMap.listItemsi (!FIRST)
+                        in
+                            (print ("\n=== FIRST ===\n");
+                            printFirstFollowHelper first_lst)
+                        end);
+
+
 printNullable ();
+printFirst ();
+printFollow ();
 
 while (!repeat = true) do (
     itr := !itr + 1;
@@ -173,8 +201,7 @@ while (!repeat = true) do (
     let
         val sym = ref (AtomMap.listKeys (#rules Grm));
     in
-        (print "Symbols: ";
-        printAtomList (!sym));
+        (* (print "Symbols: "; printAtomList (!sym)); *)
 
         while (List.null(!sym) = false) do (
 
@@ -182,17 +209,16 @@ while (!repeat = true) do (
                 val x = hd(!sym);
                 val prods = ref (RHSSet.listItems ( AtomMap.lookup((#rules Grm) , x ) handle NotFound => RHSSet.empty ))
             in
-                (print ("Current Head: " ^ (Atom.toString x) ^ " "));
+                (* (print ("Current Head: " ^ (Atom.toString x) ^ " ")); *)
                 while (List.null(!prods) = false) do (
                     let
                         val rhs = ref (List.hd(!prods))
                     in
-                        (print "\nRHS: ";
-                        printAtomList (!rhs));
+                        (* (print "\nRHS: "; printAtomList (!rhs)); *)
                         (* For each rhs production *)
                         if ((length(!rhs) = 0) orelse (isProductionNullable (!rhs))) then
                             let
-                                val t = (AtomMap.remove (!NULLABLE , x) handle LibBase.NotFound => (print ((Atom.toString x) ^ "\n") ; (AtomMap.empty, true)))
+                                val t = (AtomMap.remove (!NULLABLE , x) handle LibBase.NotFound => (print ((Atom.toString x) ^ "\n") ; (AtomMap.empty, false)))
                             in
                                 if (#2 t) = false then (
                                     NULLABLE := (#1 t);
@@ -279,3 +305,5 @@ while (!repeat = true) do (
 )
 ;
 printNullable();
+printFirst();
+printFollow();
