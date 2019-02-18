@@ -226,8 +226,8 @@ while (!repeat = true) do (
                                     modified := true
                                 ) else ()
                             end
-                        else    ()
-(*
+                        else    ();
+
                         let
                             val i = ref 0;
                             val j = ref 0;
@@ -266,7 +266,7 @@ while (!repeat = true) do (
                                     end
                                 ) else ();
 
-                                j := !i + 1;
+                                (* j := !i + 1;
                                 while !j < k do (
                                     if ((!i + 1 = !j) orelse (isProductionNullable ( List.drop(List.take(!rhs , !j - 1) , !i) ))) then (
                                         let
@@ -286,10 +286,10 @@ while (!repeat = true) do (
                                     ) else ();
 
                                     j := !j + 1
-                                );
+                                ); *)
                                 i := !i + 1
                             )
-                        end *)
+                        end
                     end;
                     prods := tl(!prods)
                 )
