@@ -1,4 +1,4 @@
-val sym = ref AtomSet.empty ;
+(* val sym = ref AtomSet.empty ;
 sym := AtomSet.add (!sym , Atom.atom "E") ;
 sym := AtomSet.add (!sym , Atom.atom "E'") ;
 sym := AtomSet.add (!sym , Atom.atom "T") ;
@@ -41,6 +41,46 @@ rul := AtomMap.insert (!rul , Atom.atom "E'" , E_prime_prod) ;
 rul := AtomMap.insert (!rul , Atom.atom "T" , T_prod) ;
 rul := AtomMap.insert (!rul , Atom.atom "T'" , T_prime_prod) ;
 rul := AtomMap.insert (!rul , Atom.atom "F" , F_prod) ;
+
+val Grm : Grammar = {
+    symbols = !sym,
+    tokens = !tok,
+    rules = !rul
+} *)
+
+
+val sym = ref AtomSet.empty ;
+sym := AtomSet.add (!sym , Atom.atom "S") ;
+sym := AtomSet.add (!sym , Atom.atom "A") ;
+sym := AtomSet.add (!sym , Atom.atom "B") ;
+sym := AtomSet.add (!sym , Atom.atom "C") ;
+
+
+val tok = ref AtomSet.empty ;
+tok := AtomSet.add (!tok , Atom.atom "d") ;
+
+val S_prod : Productions = RHSSet.fromList ([
+        [Atom.atom "A"]
+    ])
+
+val A_prod : Productions = RHSSet.fromList ([
+        [Atom.atom "B"]
+    ])
+
+val B_prod : Productions = RHSSet.fromList ([
+        [Atom.atom "C"]
+    ])
+
+val C_prod : Productions = RHSSet.fromList ([
+        [Atom.atom "d"]
+    ])
+
+
+val rul : Rules ref = ref AtomMap.empty ;
+rul := AtomMap.insert (!rul , Atom.atom "S" , S_prod) ;
+rul := AtomMap.insert (!rul , Atom.atom "A" , A_prod) ;
+rul := AtomMap.insert (!rul , Atom.atom "B" , B_prod) ;
+rul := AtomMap.insert (!rul , Atom.atom "C" , C_prod) ;
 
 val Grm : Grammar = {
     symbols = !sym,
