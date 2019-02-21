@@ -12,6 +12,13 @@ use "first_follow_set.sml";
         tok_list
 *)
 
+fun first_set ([]) = 
+|   first_set (rhs) = 
+
+fun follow_set ([]) = 
+|   follow_set (rhs) =
+
+
 structure LLONE_KEY : ORD_KEY = struct
     (* complete this *)
     type ord_key = (Atom.atom * Atom.atom)
@@ -28,3 +35,17 @@ type lloneParsingTable = Productions LLONE_TBL_MAP.map
 
 val lpt : lloneParsingTable ref = ref LLONE_TBL_MAP.empty;
 
+let 
+    val sym = ref sym_list
+in
+    while List.null (!sym) = false do (
+        let
+            val x = hd(!sym);
+            val prods = ref (RHSSet.listItems ( AtomMap.lookup((#rules Grm) , x ) handle NotFound => RHSSet.empty ))
+        in
+
+        end;
+
+        sym := List.tl(!sym)
+    )
+end
