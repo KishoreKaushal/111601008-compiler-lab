@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-sml sig.sml grammar.sml faf.sml
+sml first_follow_set.sml

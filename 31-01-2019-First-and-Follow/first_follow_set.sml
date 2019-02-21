@@ -1,4 +1,5 @@
-
+use "type.sml";
+use "grammar.sml";
 
 val sym_list = AtomSet.listItems (#symbols Grm)
 val tok_list = AtomSet.listItems (#tokens Grm)
