@@ -1,4 +1,4 @@
-val sym = ref AtomSet.empty ;
+(* val sym = ref AtomSet.empty ;
 sym := AtomSet.add (!sym , Atom.atom "X") ;
 sym := AtomSet.add (!sym , Atom.atom "Y") ;
 sym := AtomSet.add (!sym , Atom.atom "Z") ;
@@ -32,10 +32,10 @@ val Grm : Grammar = {
     symbols = !sym,
     tokens = !tok,
     rules = !rul
-}
+} *)
 
 
-(* val sym = ref AtomSet.empty ;
+val sym = ref AtomSet.empty ;
 sym := AtomSet.add (!sym , Atom.atom "E") ;
 sym := AtomSet.add (!sym , Atom.atom "E'") ;
 sym := AtomSet.add (!sym , Atom.atom "T") ;
@@ -83,10 +83,10 @@ val Grm : Grammar = {
     symbols = !sym,
     tokens = !tok,
     rules = !rul
-} *)
+}
 
-
-(* val sym = ref AtomSet.empty ;
+(* 
+val sym = ref AtomSet.empty ;
 sym := AtomSet.add (!sym , Atom.atom "S") ;
 sym := AtomSet.add (!sym , Atom.atom "A") ;
 sym := AtomSet.add (!sym , Atom.atom "B") ;
