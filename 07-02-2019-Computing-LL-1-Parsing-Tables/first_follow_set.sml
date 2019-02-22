@@ -49,9 +49,9 @@ fun isNullable s = (AtomMap.lookup (!NULLABLE, s) handle NotFound => false);
 fun isProductionNullable rhs = (List.all isNullable rhs);
 
 fun printAtomList (x::xs) = (print ((Atom.toString(x)) ^ " " ); printAtomList xs)
-|   printAtomList []    = (print "\n");
+|   printAtomList []    = ();
 
-fun printAtomSet at_set = (printAtomList(AtomSet.listItems(at_set)))
+fun printAtomSet at_set = (printAtomList(AtomSet.listItems(at_set)); print "\n")
 
 fun printNullableHelper [] = (print "=== ======== ===\n")
 |   printNullableHelper (x::xs) = (let
