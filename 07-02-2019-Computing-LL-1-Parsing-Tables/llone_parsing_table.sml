@@ -12,13 +12,6 @@ use "first_follow_set.sml";
         tok_list
 *)
 
-fun first_set ([]) = 
-|   first_set (rhs) = 
-
-fun follow_set ([]) = 
-|   follow_set (rhs) =
-
-
 structure LLONE_KEY : ORD_KEY = struct
     (* complete this *)
     type ord_key = (Atom.atom * Atom.atom)
@@ -32,6 +25,17 @@ end
 structure LLONE_TBL_MAP = RedBlackMapFn (LLONE_KEY)
 
 type lloneParsingTable = Productions LLONE_TBL_MAP.map
+
+
+fun first_set ([]) = AtomSet.empty
+|   first_set (x::rhs) = let 
+                            val first_of_x = (AtomMap.lookup(!FIRST, x) handle NotFound => AtomSet.empty)
+                         in
+                            if (isNullable (x)) then (AtomSet.union(first_set(rhs), first_of_x))
+                            else first_of_x 
+                         end
+
+fun follow_set_sym x =  (AtomMap.lookup(!FOLLOW, x) handle NotFound => AtomSet.empty)
 
 val lpt : lloneParsingTable ref = ref LLONE_TBL_MAP.empty;
 
