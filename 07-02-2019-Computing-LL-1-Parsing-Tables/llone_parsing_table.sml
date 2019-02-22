@@ -37,7 +37,7 @@ fun first_set ([]) = AtomSet.empty
 
 fun follow_set_sym x =  (AtomMap.lookup(!FOLLOW, x) handle NotFound => AtomSet.empty)
 
-fun printAtomTuple (a,b) = (print ("(" ^ Atom.toString(a)^ ", " ^ Atom.toString(b) ")"))
+fun printAtomTuple (a,b) = (print ("(" ^ Atom.toString(a) ^ ", " ^ Atom.toString(b) ^ ")"))
 
 
 fun printRHSSetHelper ([]) = (print "\b\b")
@@ -46,13 +46,15 @@ fun printRHSSetHelper ([]) = (print "\b\b")
 fun printRHSSet st = printRHSSetHelper(RHSSet.listItems (st))
 
 fun printLLoneTableHelper ([]) = ()
-|   printLLoneTableHelper (tup::ll_lst) =   let 
+|   printLLoneTableHelper ((tup::ll_lst): (LLONE_KEY.ord_key * Productions) list) 
+                                        =   let 
                                                 val (k , v) = (#1 tup , #2 tup)
                                             in
                                                 printAtomTuple(k);
                                                 print " : { ";
                                                 printRHSSet (v);
-                                                print " }";
+                                                print " }\n";
+                                                printLLoneTableHelper(ll_lst)
                                             end
 
 
@@ -63,6 +65,7 @@ fun printLLoneTable lpt_ = (print "==== LLONE PARSING TABLE ====\n";
 val lpt : lloneParsingTable ref = ref LLONE_TBL_MAP.empty;
 
 let 
+    val sym_set = AtomSet.fromList sym_list ;
     val sym = ref sym_list
 in
     while (List.null (!sym) = false) do (
@@ -73,33 +76,33 @@ in
             while (List.null (!x_prods) = false) do (
                 let 
                     val rhs = ref (List.hd (!x_prods));
-                    val first_of_x = first_set (AtomSet.listItems (!rhs));
+                    val first_of_x = first_set (!rhs);
                     val follow_of_x = follow_set_sym x;
                     val addEntry = fn t => let 
-                                                val tup = ( (LLONE_TBL_MAP.remove (!lloneParsingTable , (x,t))) 
-                                                            handle LibBase.NotFound => (!lloneParsingTable, RHSSet.empty));
+                                                val tup = ( (LLONE_TBL_MAP.remove (!lpt , (x,t))) 
+                                                            handle LibBase.NotFound => (!lpt, RHSSet.empty));
                                                 val (mp , el) = (ref (#1 tup ) , ref (#2 tup))
                                             in 
-                                                lloneParsingTable := !mp;
-                                                el :=  RHSSet.union(!el , !rhs);
-                                                lloneParsingTable := LLONE_TBL_MAP.insert (!lloneParsingTable , (x,t) , !el);
+                                                lpt := !mp;
+                                                el := RHSSet.union(!el , RHSSet.fromList([!rhs]));
+                                                lpt := LLONE_TBL_MAP.insert (!lpt , (x,t) , !el)
                                             end;
-                    val T = ref first_of_x;
+                    val T = ref first_of_x
                 in
                     if (isProductionNullable(!rhs)) then (T := AtomSet.union (!T , follow_of_x))
                     else ();
-
-                    AtomSet.app(addEntry , !T)
-                end
+                    T := AtomSet.difference(!T , sym_set);
+                    AtomSet.app (addEntry) (!T)
+                end;
                 x_prods := List.tl(!x_prods)
             )
         end;
-
         sym := List.tl(!sym)
     )
-end
 
+end
+;
 
 (* printing the LLONE parsing table *)
 
-printLLoneTable (!lloneParsingTable)
+printLLoneTable (!lpt)
