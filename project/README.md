@@ -1,1 +1,1 @@
-Compiler course project: Designing a compiler for converting MinC to ____.
+Compiler course project: Designing a compiler for converting C- to MIPS.
