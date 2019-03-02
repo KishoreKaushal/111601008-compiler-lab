@@ -106,10 +106,10 @@ and run to the end of the line. No nested or multi-line comments is supported.
 * expressionStmt    :   expression **;**
                     |   **;**
 
-* selectionStmt     :   **if** **(** simpleExpression **)** statement
-                    |   **if** **(** simpleExpression **)** statement **else** statement
+* selectionStmt     :   **if** **(** simpleExpression **)** **{** statement **}**
+                    |   **if** **(** simpleExpression **)** **{** statement **}** **else** **{** statement **}**
 
-* iterationStmt     :   **while** **(** simpleExpression **)** statement
+* iterationStmt     :   **while** **(** simpleExpression **)** **{** statement **}**
 
 * returnStmt        :   **return** **;** 
                     |   **return** expression **;**
@@ -119,13 +119,7 @@ and run to the end of the line. No nested or multi-line comments is supported.
 
 -----
 
-* expression        :   mutable __=__ expression
-                    |   mutable __+=__ expression
-                    |   mutable __-=__ expression
-                    |   mutable __*=__ expression
-                    |   mutable __/=__ expression
-                    |   mutable __++__ expression
-                    |   mutable __--__ expression
+* expression        :   mutable __:=__ expression
                     |   simpleExpression
 
 * simpleExpression  :   simpleExpression **or** andExpression 
@@ -165,7 +159,6 @@ and run to the end of the line. No nested or multi-line comments is supported.
 
 * unaryop           :   **-**
                     |   __*__
-                    |   **?**
 
 * factor            :   immutable
                     |   mutable
