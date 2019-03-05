@@ -12,8 +12,13 @@
 	| IF | ELSE | STATIC | WHILE | RETURN | BREAK
 	| OR | AND | XOR | TRUE | FALSE | VAR
 
-%nonterm	program  	of Ast.program
-
+%nonterm	program  		of Ast.program
+		|	declarationList of Ast.declaration list
+		|	declaration		of Ast.declaration
+		|	varDeclaration	of Ast.VARDEC
+		|	funDeclaration 	of Ast.FUNDEC
+		|	typeSpecifier	of Ast.typeSpecifier
+		|	varDeclList		of Ast.varDeclId list
 
 %keyword IF ELSE STATIC WHILE RETURN BREAK OR 
 			AND XOR TRUE FALSE VAR
@@ -40,4 +45,17 @@
 %name MinC
 
 %%
+
+program				:	declarationList						(declarationList)
+
+declarationList		:	declaration declarationList			(declaration::declarationList)
+					|										([])
+
+declaration			:	varDeclaration						(varDeclaration)
+					|	funDeclaration						(funDeclaration)
+
+varDeclaration		:	typeSpecifier varDeclList SEMICOLON (Ast.VARDEC(typeSpecifier , varDeclList))
+
+varDeclList			:	varDeclId							([varDeclId])
+					|	varDeclId COMMA varDeclList			(varDeclId::varDeclList)
 
