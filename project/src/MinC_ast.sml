@@ -4,11 +4,13 @@ structure Ast = struct
 
     type NUMCONST = int
 
+    type STRINGCONST = string
+
     datatype binop = PLUS | MINUS | TIMES | DIVIDE | MOD
 
     datatype relop = GT | GE | LT | LE | EQ | NEQ
 
-    datatype unaryop = UMINUS | NOT | ASTERISK
+    datatype unaryop = UMINUS | NOT
 
     datatype boolop = AND | OR | XOR
 
@@ -46,7 +48,9 @@ structure Ast = struct
     and returnStmt = RETNOTHING
                     | RETEXPR of (expression)
     
-    and typeSpecifier = INT | BOOL | CHAR
+    and typeSpecifier   = INT
+                        | BOOL 
+                        | STRING
 
 
     type program = declaration list

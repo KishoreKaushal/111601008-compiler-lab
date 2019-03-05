@@ -65,7 +65,7 @@ and run to the end of the line. No nested or multi-line comments is supported.
 
 * returnTypeSpecifier   :   **int**
                         |   **bool**
-                        |   **char**
+                        |   **string**
 
 -----
 
@@ -180,6 +180,6 @@ and run to the end of the line. No nested or multi-line comments is supported.
                     |   expression
 
 * constant          :   **NUMCONST**
-                    |   **CHARCONST**
+                    |   **STRINGCONST**
                     |   **true**
                     |   **false**
