@@ -2,6 +2,7 @@
 %term	EOF
 	| SEMICOLON
 	| INT of int
+	| STRING of string
 	| BOOL of bool
 	| ID of string
 	| PLUS | MINUS | TIMES | DIVIDE | MOD
@@ -19,6 +20,7 @@
 		|	funDeclaration 	of Ast.FUNDEC
 		|	typeSpecifier	of Ast.typeSpecifier
 		|	varDeclList		of Ast.varDeclId list
+		|	varDeclId		of Ast.varDeclId
 
 %keyword IF ELSE STATIC WHILE RETURN BREAK OR 
 			AND XOR TRUE FALSE VAR
@@ -59,3 +61,11 @@ varDeclaration		:	typeSpecifier varDeclList SEMICOLON (Ast.VARDEC(typeSpecifier 
 varDeclList			:	varDeclId							([varDeclId])
 					|	varDeclId COMMA varDeclList			(varDeclId::varDeclList)
 
+varDeclId			:	ID									(Ast.VARDEC_IDEN(ID))
+					|	ID	LBRACK INT RBRACK				(Ast.VARDEC_ARR_IDEN(ID , INT))
+
+typeSpecifier		:	INT									(Ast.INT)
+					|	BOOL								(Ast.BOOL)
+					|	STRING								(Ast.STRING)
+
+funDeclaration		:	typeSpecifier 
