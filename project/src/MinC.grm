@@ -1,29 +1,31 @@
 %%
 %term	EOF
 	| SEMICOLON
-	| INT of int
-	| STRING of string
-	| BOOL of bool
+	| INT
+	| STRING
+	| BOOL
+	| NUMCONST of int
+	| STRINGCONST of string
 	| ID of string
+	| TRUE of bool
+	| FALSE of bool
 	| PLUS | MINUS | TIMES | DIVIDE | MOD
 	| EQ | NEQ | LE | LT | GE | GT
 	| UMINUS | NOT 
 	| ASSIGN | COMMA | COLON 
 	| DOT | LBRACK | RBRACK | LBRACE | RBRACE | LPAREN | RPAREN
 	| IF | ELSE | STATIC | WHILE | RETURN | BREAK
-	| OR | AND | XOR | TRUE | FALSE | VAR
+	| OR | AND | XOR | VAR
 
 %nonterm	program  		of Ast.program
 		|	declarationList of Ast.declaration list
 		|	declaration		of Ast.declaration
 		|	varDeclaration	of Ast.VARDEC
-		|	funDeclaration 	of Ast.FUNDEC
 		|	typeSpecifier	of Ast.typeSpecifier
 		|	varDeclList		of Ast.varDeclId list
 		|	varDeclId		of Ast.varDeclId
 
-%keyword IF ELSE STATIC WHILE RETURN BREAK OR 
-			AND XOR TRUE FALSE VAR
+%keyword INT STRING BOOL TRUE FALSE
 
 
 %pos int
@@ -54,7 +56,6 @@ declarationList		:	declaration declarationList			(declaration::declarationList)
 					|										([])
 
 declaration			:	varDeclaration						(varDeclaration)
-					|	funDeclaration						(funDeclaration)
 
 varDeclaration		:	typeSpecifier varDeclList SEMICOLON (Ast.VARDEC(typeSpecifier , varDeclList))
 
@@ -67,5 +68,3 @@ varDeclId			:	ID									(Ast.VARDEC_IDEN(ID))
 typeSpecifier		:	INT									(Ast.INT)
 					|	BOOL								(Ast.BOOL)
 					|	STRING								(Ast.STRING)
-
-funDeclaration		:	typeSpecifier 

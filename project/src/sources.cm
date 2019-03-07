@@ -1,9 +1,8 @@
 Group is
 
-driver.sml
+MinC.lex
 errormsg.sml
-tokens.sig
-tokens.sml
-tiger.lex
-$/basis.cm
-$/smlnj-lib.cm
+parsetest.sml
+MinC.grm
+smlnj-lib.cm
+ml-yacc-lib.cm

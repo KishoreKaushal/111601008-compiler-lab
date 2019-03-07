@@ -49,10 +49,14 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 <INITIAL> ","	      => (Tokens.COMMA (yypos, yypos+1));
 <INITIAL> int         => (Tokens.INT (yypos, yypos+3));
 <INITIAL> string      => (Tokens.STRING (yypos, yypos+6));
+<INITIAL> bool        => (Tokens.BOOL (yypos , yypos+4));
+<INITIAL> true        => (Tokens.TRUE (yypos , yypos+4));
+<INITIAL> false        => (Tokens.FALSE (yypos , yypos+4));
 <INITIAL> {digit}+    => (Tokens.NUMCONST(IntFromString yytext, 
                             yypos, yypos + size yytext));
 
-<INITIAL> \"(\(.|\n)|[^\\"\n])*\" => (Tokens.STRINGCONST(toStrConst yytext,
+<INITIAL> \"(\\.|[^"\\])*\"
+                        => (Tokens.STRINGCONST(toStrConst yytext,
                                             yypos, yypos + size yytext));
 
 <INITIAL> ({letter}|"_")(({letter}|{digit}|"_")*)
@@ -60,4 +64,3 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
                             yypos + size yytext));
 
 .           => (print("error"); print(yytext); continue());
-
