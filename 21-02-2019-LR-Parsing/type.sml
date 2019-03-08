@@ -63,4 +63,4 @@ type Grammar    = { symbols : AtomSet.set, tokens : AtomSet.set, rules : Rules }
     Note that the before is kept in reverse order. The advantage of this method is that 
     "moving the dot", when computing shift and gotos can be done in one step.    
 *)
-type Item = { lhs : atom, before : atom list, after : atom list }
+type Item = { lhs : Atom.atom, before : Atom.atom list, after : Atom.atom list }
