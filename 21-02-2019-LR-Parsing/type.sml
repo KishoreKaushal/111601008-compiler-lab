@@ -64,3 +64,21 @@ type Grammar    = { symbols : AtomSet.set, tokens : AtomSet.set, rules : Rules }
     "moving the dot", when computing shift and gotos can be done in one step.    
 *)
 type Item = { lhs : Atom.atom, before : Atom.atom list, after : Atom.atom list }
+
+structure ITEM_KEY : ORD_KEY = struct
+    (* complete this *)
+    type ord_key = Item
+    fun compare (a : Item, b : Item)
+                    =   let
+                            val cmp_lhs = Atom.lexCompare((#lhs a), (#lhs b));
+                            val cmp_before = RHS_KEY.compare((#before a), (#before b));
+                            val cmp_after = RHS_KEY.compare((#after a), (#after b))
+                        in
+                            if (cmp_lhs = EQUAL) then (
+                                if (cmp_before = EQUAL) then cmp_after
+                                else cmp_before
+                            ) else cmp_lhs
+                        end
+end
+
+structure ItemSet = RedBlackSetFn (ITEM_KEY)
