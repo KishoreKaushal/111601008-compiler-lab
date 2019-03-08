@@ -47,3 +47,20 @@ type Rules = Productions AtomMap.map
 
 
 type Grammar    = { symbols : AtomSet.set, tokens : AtomSet.set, rules : Rules }
+
+(*
+    lhs     : the left hand side
+    before  : the symbols/tokens before the dot in the rhs in reverse order
+    after   : the symbols/tokens after the dot
+
+    for eg., 
+    Item [A -> aA . bB] would be represented as:
+    
+    lhs     = atom "A"
+    before  = List.map atom ["A", "a"]
+    after   = List.map atom ["b", "B"]
+
+    Note that the before is kept in reverse order. The advantage of this method is that 
+    "moving the dot", when computing shift and gotos can be done in one step.    
+*)
+type Item = { lhs : atom, before : atom list, after : atom list }
