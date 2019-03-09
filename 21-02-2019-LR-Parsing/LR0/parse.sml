@@ -6,8 +6,8 @@ fun closureInnerLoopHelper ([], X : Atom.atom, I : ItemSet.set ref) = ()
 =   let
         val newIt : Item = {
             lhs = X,
-            before = [],
-            after = prod
+            bef = [],
+            aft = prod
         }
     in 
         I := ItemSet.add(!I, newIt);
@@ -16,8 +16,8 @@ fun closureInnerLoopHelper ([], X : Atom.atom, I : ItemSet.set ref) = ()
 
 fun closureProcessItem (It : Item, I : ItemSet.set ref, Grm : Grammar ref)
 =   let
-        val { lhs, before, after } = It;
-        val x = List.hd (after);
+        val { lhs, bef, aft } = It;
+        val x = List.hd (aft);
         val {symbols, tokens, rules} = (#symbols (!Grm))
     in
         if (AtomSet.member(symbols, X)) then 

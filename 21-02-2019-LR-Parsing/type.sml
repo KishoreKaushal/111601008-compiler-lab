@@ -53,20 +53,20 @@ type Grammar    = { symbols : AtomSet.set, tokens : AtomSet.set, rules : Rules }
 
 (*
     lhs     : the left hand side
-    before  : the symbols/tokens before the dot in the rhs in reverse order
-    after   : the symbols/tokens after the dot
+    bef     : the symbols/tokens before the dot in the rhs in reverse order
+    aft     : the symbols/tokens after the dot
 
     for eg., 
     Item [A -> aA . bB] would be represented as:
     
     lhs     = atom "A"
-    before  = List.map atom ["A", "a"]
-    after   = List.map atom ["b", "B"]
+    bef     = List.map atom ["A", "a"]
+    aft     = List.map atom ["b", "B"]
 
     Note that the before is kept in reverse order. The advantage of this method is that 
     "moving the dot", when computing shift and gotos can be done in one step.    
 *)
-type Item = { lhs : Atom.atom, before : Atom.atom list, after : Atom.atom list }
+type Item = { lhs : Atom.atom, bef : Atom.atom list, aft : Atom.atom list }
 
 structure ITEM_KEY : ORD_KEY = struct
     (* complete this *)
@@ -74,8 +74,8 @@ structure ITEM_KEY : ORD_KEY = struct
     fun compare (a : Item, b : Item)
                     =   let
                             val cmp_lhs = Atom.lexCompare((#lhs a), (#lhs b));
-                            val cmp_before = compareAtomList((#before a), (#before b));
-                            val cmp_after = compareAtomList((#after a), (#after b))
+                            val cmp_before = compareAtomList((#bef a), (#bef b));
+                            val cmp_after = compareAtomList((#aft a), (#aft b))
                         in
                             if (cmp_lhs = EQUAL) then (
                                 if (cmp_before = EQUAL) then cmp_after
@@ -91,16 +91,19 @@ fun printAtomListInItem ([]) = ()
 =   let val str = Atom.toString (at) in print (str); printAtomListInItem(atmList) end
 
 fun printItem (It : Item)
-=   let val { lhs, before, after } = It 
-    in  print(Atom.toString(lhs)); print(" -> "); 
-        printAtomListInItem(List.rev(before)); 
+=   let 
+        val { lhs, bef, aft } = It
+    in  
+        print (Atom.toString(lhs)); 
+        print (" -> ");
+        printAtomListInItem( List.rev (bef)); 
         print (".");
-        printAtomListInItem(after)
+        printAtomListInItem(aft)
     end 
 
 fun printItemList ([]) = ()
 |   printItemList (It::itemList)
-=   printItem(It); printItemList(itemList)
+=   (printItem(It); printItemList(itemList))
 
-fun printItemSet(I : ItemSet) 
+fun printItemSet (I : ItemSet.set)
 =   let val itemList = ItemSet.listItems(I) in printItemList(itemList) end 
