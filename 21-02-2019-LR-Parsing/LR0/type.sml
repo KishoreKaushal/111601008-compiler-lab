@@ -97,12 +97,12 @@ end
 
 structure StateSet = RedBlackSetFn (STATE_KEY)
 
-type Edge = {from : Item, to : Item, on : Atom.atom}
+type Edge = {from : State, to : State, on : Atom.atom}
 
 fun compareEdge (a : Edge, b : Edge)
 =   let 
-        val cmp_from = compareItem((#from a) , (#from b))
-        val cmp_to = compareItem((#to a) , (#to b))
+        val cmp_from = compareItemSet((#from a) , (#from b))
+        val cmp_to = compareItemSet((#to a) , (#to b))
         val cmp_on = Atom.lexCompare ((#on a), (#on b))
     in 
         if (cmp_from = EQUAL) then (

@@ -42,7 +42,7 @@ fun closure (I : State ref, Grm : Grammar)
         closureOuterLoopHelper(itemList, I, Grm);
         if (ItemSet.equal (initSet , !I) = false) then (closure (I, Grm); ())
         else ()
-    end
+    end;
 
 (* Test for closure *)
 (* 
@@ -79,16 +79,74 @@ fun gotoLoopHelper ([] , J : State ref, X : Atom.atom) = ()
 |   gotoLoopHelper (It::ItemList , J : State ref, X : Atom.atom)
 =   (gotoProcessItem(It, J, X); gotoLoopHelper(ItemList, J, X))
 
-fun goto (I : State ref, X : Atom.atom, Grm : Grammar)
+fun goto (I : State, X : Atom.atom, Grm : Grammar)
 =   let 
-        val itemList = ItemSet.listItems(!I);
+        val itemList = ItemSet.listItems(I);
         val J : State ref = ref ItemSet.empty
     in 
         gotoLoopHelper(itemList, J, X);
         closure(J, Grm);
         (!J)
-    end
+    end;
 
-fun computeShiftAndGoto(T : StateSet.set ref, )
-=   let
-        val T = 
+fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = ()
+|   computeShiftAndGotoInnerLoopHelper (It::ItemList, I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = (
+    let 
+        val { lhs, bef, aft } = It;
+        val X = List.hd (aft);
+        val J = goto(I, X, Grm);
+        val newEdge : Edge = {
+            from = I,
+            to = J,
+            on = X
+        }
+    in 
+        T := StateSet.add (!T, J);
+        E := EdgeSet.add (!E, newEdge);
+        computeShiftAndGotoInnerLoopHelper(ItemList, I, T, E, Grm)
+    end
+)
+
+
+fun computeShiftAndGotoProcessState (I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = (
+    let 
+        val itemList = ItemSet.listItems(I);
+    in
+        computeShiftAndGotoInnerLoopHelper(itemList, I, T, E, Grm)
+    end
+)
+
+fun computeShiftAndGotoOuterLoopHelper ([], T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = ()
+|   computeShiftAndGotoOuterLoopHelper (st::stLst, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) 
+= (computeShiftAndGotoProcessState(st, T, E, Grm); computeShiftAndGotoOuterLoopHelper(stLst, T, E, Grm))
+
+fun computeShiftAndGotoHelper (T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar)
+= (
+    let 
+        val stateList = StateSet.listItems (!T);
+        val initStateSet = (!T);
+        val initEdgeSet = (!E);
+    in 
+        computeShiftAndGotoOuterLoopHelper(stateList, T, E, Grm);
+        if ((StateSet.equal (initStateSet, !T) = false) 
+                orelse 
+            (EdgeSet.equal (initEdgeSet, !E) = false))
+        then (computeShiftAndGotoHelper(T, E, Grm) ; ())
+        else ()
+    end
+)
+
+fun computeShiftAndGoto (T : StateSet.set ref, E : EdgeSet.set ref, 
+startItem : Item, Grm : Grammar) = ( 
+    E := EdgeSet.empty ;
+    T := StateSet.empty ;
+    let 
+        val I : State ref = ref ItemSet.empty
+    in 
+        I := ItemSet.add (!I, startItem);
+        closure(I, Grm);
+        T := StateSet.add(!T, !I)
+    end;
+    (* Initialization done. *)
+    computeShiftAndGotoHelper(T, E, Grm)
+)
