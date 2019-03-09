@@ -45,6 +45,8 @@ fun closure (I : ItemSet.set ref, Grm : Grammar)
     end
 
 (* Test for closure *)
+
+(* 
 val I : ItemSet.set ref = ref ItemSet.empty ;
 
 
@@ -58,4 +60,32 @@ I := ItemSet.add (!I , It);
 
 closure(I, Grm);
 
-printItemSet(!I); 
+printItemSet(!I);  *)
+
+fun gotoProcessItem (It : Item,  J : ItemSet.set ref, X : Atom.atom)
+=   let 
+        val {lhs, bef, aft} = It;
+        val aftHd = List.hd(aft);
+        val newItem : Item = {
+            lhs = lhs,
+            bef = List.hd(aft)::bef,
+            aft = List.tl(aft)
+        }
+    in
+        if (Atom.same(aftHd,X)) then J := ItemSet.add (!J, newItem)
+        else ()
+    end
+
+fun gotoLoopHelper ([] , J : ItemSet.set ref, X : Atom.atom) = ()
+|   gotoLoopHelper (It::ItemList , J : ItemSet.set ref, X : Atom.atom)
+=   (gotoProcessItem(It, J, X); gotoLoopHelper(ItemList, J, X))
+
+fun goto (I : ItemSet.set ref, X : Atom.atom, Grm : Grammar)
+=   let 
+        val itemList = ItemSet.listItems(!I);
+        val J : ItemSet.set ref = ref ItemSet.empty
+    in 
+        gotoLoopHelper(itemList, J, X);
+        closure(J, Grm);
+        (!J)
+    end
