@@ -40,7 +40,7 @@ fun closure (I : ItemSet.set ref, Grm : Grammar)
         val initSet = (!I)
     in
         closureOuterLoopHelper(itemList, I, Grm);
-        if (ItemSet.equal (initSet , !I)) then (closure (I, Grm); ())
+        if (ItemSet.equal (initSet , !I) = false) then (closure (I, Grm); ())
         else ()
     end
 

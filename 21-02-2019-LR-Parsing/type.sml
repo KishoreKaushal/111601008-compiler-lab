@@ -88,7 +88,7 @@ structure ItemSet = RedBlackSetFn (ITEM_KEY)
 
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)
-=   let val str = Atom.toString (at) in print (str); printAtomListInItem(atmList) end
+=   let val str = Atom.toString (at) in print (str^" "); printAtomListInItem(atmList) end
 
 fun printItem (It : Item)
 =   let 
@@ -97,7 +97,7 @@ fun printItem (It : Item)
         print (Atom.toString(lhs)); 
         print (" -> ");
         printAtomListInItem( List.rev (bef)); 
-        print (".");
+        print (" . ");
         printAtomListInItem(aft)
     end 
 
