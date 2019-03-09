@@ -1,3 +1,18 @@
+fun compareAtomList (a , b) 
+    = case (a , b) of
+        ([], [])    => EQUAL
+    |   ([], x::xs) => LESS
+    |   (x::xs, []) => GREATER
+    |   (x::xs, y::ys)
+                    =>  let
+                            val temp = Atom.lexCompare(x,y)
+                        in
+                            case temp of
+                                EQUAL   => compareAtomList(xs , ys)
+                            |   GREATER => GREATER
+                            |   LESS    => LESS
+                        end
+
 type RHS = Atom.atom list  (* The RHS γ of a rule A -> γ *)
 
 (*
@@ -13,19 +28,7 @@ structure of signature ORD_KEY for RHS.
 structure RHS_KEY : ORD_KEY = struct
     (* complete this *)
     type ord_key = Atom.atom list
-    fun compare (a , b)  = case (a , b) of
-                            ([], [])    => EQUAL
-                        |   ([], x::xs) => LESS
-                        |   (x::xs, []) => GREATER
-                        |   (x::xs, y::ys)
-                                        =>  let
-                                                val temp = Atom.lexCompare(x,y)
-                                            in
-                                                case temp of
-                                                    EQUAL   => compare(xs , ys)
-                                                |   GREATER => GREATER
-                                                |   LESS    => LESS
-                                            end
+    fun compare (a , b)  = compareAtomList (a,b)
 end
 
 
@@ -71,8 +74,8 @@ structure ITEM_KEY : ORD_KEY = struct
     fun compare (a : Item, b : Item)
                     =   let
                             val cmp_lhs = Atom.lexCompare((#lhs a), (#lhs b));
-                            val cmp_before = RHS_KEY.compare((#before a), (#before b));
-                            val cmp_after = RHS_KEY.compare((#after a), (#after b))
+                            val cmp_before = compareAtomList((#before a), (#before b));
+                            val cmp_after = compareAtomList((#after a), (#after b))
                         in
                             if (cmp_lhs = EQUAL) then (
                                 if (cmp_before = EQUAL) then cmp_after
