@@ -97,6 +97,27 @@ end
 
 structure StateSet = RedBlackSetFn (STATE_KEY)
 
+type Edge = {from : Item, to : Item, on : Atom.atom}
+
+fun compareEdge (a : Edge, b : Edge)
+=   let 
+        val cmp_from = compareItem((#from a) , (#from b))
+        val cmp_to = compareItem((#to a) , (#to b))
+        val cmp_on = Atom.lexCompare ((#on a), (#on b))
+    in 
+        if (cmp_from = EQUAL) then (
+            if (cmp_to = EQUAL) then cmp_on
+            else cmp_to
+        ) else cmp_from
+    end
+
+structure EDGE_KEY : ORD_KEY = struct
+    type ord_key = Edge
+    fun compare (a : Edge, b : Edge) = compareEdge (a, b)
+end
+
+structure EdgeSet = RedBlackSetFn (EDGE_KEY)
+
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)
 =   let val str = Atom.toString (at) in print (str^" "); printAtomListInItem(atmList) end

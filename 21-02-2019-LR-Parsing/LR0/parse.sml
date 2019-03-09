@@ -1,5 +1,5 @@
-use "../type.sml";
-use "../grammar.sml";
+use "./type.sml";
+use "./grammar.sml";
 
 fun closureInnerLoopHelper ([], X : Atom.atom, I : State ref) = ()
 |   closureInnerLoopHelper (prod::prodList, X : Atom.atom, I : State ref) 
@@ -88,3 +88,7 @@ fun goto (I : State ref, X : Atom.atom, Grm : Grammar)
         closure(J, Grm);
         (!J)
     end
+
+fun computeShiftAndGoto(T : StateSet.set ref, )
+=   let
+        val T = 
