@@ -103,7 +103,7 @@ fun printItem (It : Item)
 
 fun printItemList ([]) = ()
 |   printItemList (It::itemList)
-=   (printItem(It); printItemList(itemList))
+=   (printItem(It); print("\n"); printItemList(itemList))
 
 fun printItemSet (I : ItemSet.set)
 =   let val itemList = ItemSet.listItems(I) in printItemList(itemList) end 

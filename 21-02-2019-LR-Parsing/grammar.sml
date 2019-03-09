@@ -16,7 +16,7 @@ val E_prime_prod : Productions = RHSSet.fromList ([
     ])
 
 val E_prod : Productions = RHSSet.fromList ([
-        [Atom.atom "E", Atom.atom "T"],
+        [Atom.atom "E", Atom.atom"+", Atom.atom "T"],
         [Atom.atom "T"]
     ])
 
@@ -42,7 +42,7 @@ val Grm : Grammar = {
     rules = !rul
 }
 
-
+(* 
 val sym = ref AtomSet.empty ;
 sym := AtomSet.add (!sym , Atom.atom "S") ;
 sym := AtomSet.add (!sym , Atom.atom "E") ;
@@ -94,4 +94,4 @@ val Grm : Grammar = {
     symbols = !sym,
     tokens = !tok,
     rules = !rul
-} 
+}  *)

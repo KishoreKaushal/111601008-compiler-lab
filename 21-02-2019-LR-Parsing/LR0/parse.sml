@@ -11,34 +11,51 @@ fun closureInnerLoopHelper ([], X : Atom.atom, I : ItemSet.set ref) = ()
         }
     in 
         I := ItemSet.add(!I, newIt);
-        closureInnerLoopHelper(prodList, I)
+        closureInnerLoopHelper(prodList, X, I)
     end
 
-fun closureProcessItem (It : Item, I : ItemSet.set ref, Grm : Grammar ref)
+fun closureProcessItem (It : Item, I : ItemSet.set ref, Grm : Grammar)
 =   let
         val { lhs, bef, aft } = It;
-        val x = List.hd (aft);
-        val {symbols, tokens, rules} = (#symbols (!Grm))
+        val X = List.hd (aft);
+        val {symbols, tokens, rules} = Grm
     in
-        if (AtomSet.member(symbols, X)) then 
+        if (AtomSet.member(symbols, X)) then (
             let 
                 val prodList = RHSSet.listItems( AtomMap.lookup (rules, X) 
                                                 handle NotFound => RHSSet.empty)
             in 
                 closureInnerLoopHelper(prodList, X, I)
             end
+        ) else ()
     end
 
-fun closureOuterLoopHelper ([] , I : ItemSet.set ref, Grm : Grammar ref) = 
-|   closureOuterLoopHelper (It::ItemList , I : ItemSet.set ref, Grm : Grammar ref) 
-=   closureProcessItem(It, I, Grm); closureOuterLoopHelper(ItemList, I, Grm)
+fun closureOuterLoopHelper ([] , I : ItemSet.set ref, Grm : Grammar) = ()
+|   closureOuterLoopHelper (It::ItemList , I : ItemSet.set ref, Grm : Grammar) 
+=   (closureProcessItem(It, I, Grm); closureOuterLoopHelper(ItemList, I, Grm))
 
-
-fun closure (I : ItemSet.set ref, Grm : Grammar ref)
+fun closure (I : ItemSet.set ref, Grm : Grammar)
 =   let 
         val itemList = ItemSet.listItems(!I);
-        val initSet = !I
+        val initSet = (!I)
     in
-        closureOuterLoopHelper(itemList, I, Grm),
-        if (ItemSet.equal (initSet , !I)) then closure (I, Grm)
+        closureOuterLoopHelper(itemList, I, Grm);
+        if (ItemSet.equal (initSet , !I)) then (closure (I, Grm); ())
+        else ()
     end
+
+(* Test for closure *)
+val I : ItemSet.set ref = ref ItemSet.empty ;
+
+
+val It : Item = {
+    lhs = Atom.atom "E'",
+    bef = List.map Atom.atom [] ,
+    aft = List.map Atom.atom ["E", "$"] 
+};
+
+I := ItemSet.add (!I , It);
+
+closure(I, Grm);
+
+printItemSet(!I); 
