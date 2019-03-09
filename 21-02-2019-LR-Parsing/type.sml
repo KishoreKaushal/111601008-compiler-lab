@@ -26,7 +26,6 @@ structure of signature ORD_KEY for RHS.
 *)
 
 structure RHS_KEY : ORD_KEY = struct
-    (* complete this *)
     type ord_key = Atom.atom list
     fun compare (a , b)  = compareAtomList (a,b)
 end
@@ -68,23 +67,35 @@ type Grammar    = { symbols : AtomSet.set, tokens : AtomSet.set, rules : Rules }
 *)
 type Item = { lhs : Atom.atom, bef : Atom.atom list, aft : Atom.atom list }
 
+fun compareItem (a : Item, b : Item)
+=   let
+        val cmp_lhs = Atom.lexCompare((#lhs a), (#lhs b));
+        val cmp_before = compareAtomList((#bef a), (#bef b));
+        val cmp_after = compareAtomList((#aft a), (#aft b))
+    in
+        if (cmp_lhs = EQUAL) then (
+            if (cmp_before = EQUAL) then cmp_after
+            else cmp_before
+        ) else cmp_lhs
+    end
+
 structure ITEM_KEY : ORD_KEY = struct
-    (* complete this *)
     type ord_key = Item
-    fun compare (a : Item, b : Item)
-                    =   let
-                            val cmp_lhs = Atom.lexCompare((#lhs a), (#lhs b));
-                            val cmp_before = compareAtomList((#bef a), (#bef b));
-                            val cmp_after = compareAtomList((#aft a), (#aft b))
-                        in
-                            if (cmp_lhs = EQUAL) then (
-                                if (cmp_before = EQUAL) then cmp_after
-                                else cmp_before
-                            ) else cmp_lhs
-                        end
+    fun compare (a : Item, b : Item) = compareItem(a,b)
 end
 
 structure ItemSet = RedBlackSetFn (ITEM_KEY)
+
+type State = ItemSet.set
+
+fun compareItemSet(a : State, b : State) = ItemSet.compare(a,b)
+
+structure STATE_KEY : ORD_KEY = struct 
+    type ord_key = State
+    fun compare (a : State, b : State) = compareItemSet(a,b)
+end
+
+structure StateSet = RedBlackSetFn (STATE_KEY)
 
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)

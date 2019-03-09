@@ -1,8 +1,8 @@
 use "../type.sml";
 use "../grammar.sml";
 
-fun closureInnerLoopHelper ([], X : Atom.atom, I : ItemSet.set ref) = ()
-|   closureInnerLoopHelper (prod::prodList, X : Atom.atom, I : ItemSet.set ref) 
+fun closureInnerLoopHelper ([], X : Atom.atom, I : State ref) = ()
+|   closureInnerLoopHelper (prod::prodList, X : Atom.atom, I : State ref) 
 =   let
         val newIt : Item = {
             lhs = X,
@@ -14,7 +14,7 @@ fun closureInnerLoopHelper ([], X : Atom.atom, I : ItemSet.set ref) = ()
         closureInnerLoopHelper(prodList, X, I)
     end
 
-fun closureProcessItem (It : Item, I : ItemSet.set ref, Grm : Grammar)
+fun closureProcessItem (It : Item, I : State ref, Grm : Grammar)
 =   let
         val { lhs, bef, aft } = It;
         val X = List.hd (aft);
@@ -30,11 +30,11 @@ fun closureProcessItem (It : Item, I : ItemSet.set ref, Grm : Grammar)
         ) else ()
     end
 
-fun closureOuterLoopHelper ([] , I : ItemSet.set ref, Grm : Grammar) = ()
-|   closureOuterLoopHelper (It::ItemList , I : ItemSet.set ref, Grm : Grammar) 
+fun closureOuterLoopHelper ([] , I : State ref, Grm : Grammar) = ()
+|   closureOuterLoopHelper (It::ItemList , I : State ref, Grm : Grammar) 
 =   (closureProcessItem(It, I, Grm); closureOuterLoopHelper(ItemList, I, Grm))
 
-fun closure (I : ItemSet.set ref, Grm : Grammar)
+fun closure (I : State ref, Grm : Grammar)
 =   let 
         val itemList = ItemSet.listItems(!I);
         val initSet = (!I)
@@ -45,9 +45,8 @@ fun closure (I : ItemSet.set ref, Grm : Grammar)
     end
 
 (* Test for closure *)
-
 (* 
-val I : ItemSet.set ref = ref ItemSet.empty ;
+val I : State ref = ref ItemSet.empty ;
 
 
 val It : Item = {
@@ -60,9 +59,9 @@ I := ItemSet.add (!I , It);
 
 closure(I, Grm);
 
-printItemSet(!I);  *)
+printItemSet(!I);   *)
 
-fun gotoProcessItem (It : Item,  J : ItemSet.set ref, X : Atom.atom)
+fun gotoProcessItem (It : Item,  J : State ref, X : Atom.atom)
 =   let 
         val {lhs, bef, aft} = It;
         val aftHd = List.hd(aft);
@@ -76,14 +75,14 @@ fun gotoProcessItem (It : Item,  J : ItemSet.set ref, X : Atom.atom)
         else ()
     end
 
-fun gotoLoopHelper ([] , J : ItemSet.set ref, X : Atom.atom) = ()
-|   gotoLoopHelper (It::ItemList , J : ItemSet.set ref, X : Atom.atom)
+fun gotoLoopHelper ([] , J : State ref, X : Atom.atom) = ()
+|   gotoLoopHelper (It::ItemList , J : State ref, X : Atom.atom)
 =   (gotoProcessItem(It, J, X); gotoLoopHelper(ItemList, J, X))
 
-fun goto (I : ItemSet.set ref, X : Atom.atom, Grm : Grammar)
+fun goto (I : State ref, X : Atom.atom, Grm : Grammar)
 =   let 
         val itemList = ItemSet.listItems(!I);
-        val J : ItemSet.set ref = ref ItemSet.empty
+        val J : State ref = ref ItemSet.empty
     in 
         gotoLoopHelper(itemList, J, X);
         closure(J, Grm);
