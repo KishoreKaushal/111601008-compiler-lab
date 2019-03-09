@@ -85,3 +85,22 @@ structure ITEM_KEY : ORD_KEY = struct
 end
 
 structure ItemSet = RedBlackSetFn (ITEM_KEY)
+
+fun printAtomListInItem ([]) = ()
+|   printAtomListInItem (at::atmList)
+=   let val str = Atom.toString (at) in print (str); printAtomListInItem(atmList) end
+
+fun printItem (It : Item)
+=   let val { lhs, before, after } = It 
+    in  print(Atom.toString(lhs)); print(" -> "); 
+        printAtomListInItem(List.rev(before)); 
+        print (".");
+        printAtomListInItem(after)
+    end 
+
+fun printItemList ([]) = ()
+|   printItemList (It::itemList)
+=   printItem(It); printItemList(itemList)
+
+fun printItemSet(I : ItemSet) 
+=   let val itemList = ItemSet.listItems(I) in printItemList(itemList) end 
