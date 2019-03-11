@@ -118,6 +118,37 @@ end
 
 structure EdgeSet = RedBlackSetFn (EDGE_KEY)
 
+type simpleProd = { left : Atom.atom, right: Atom.atom list }
+
+type ReduceAction = { state: State, prod: simpleProd }
+
+fun compareSimpleProd (a : simpleProd, b : simpleProd) = (
+    let 
+        val cmp_left = Atom.compare((#left a), (#left b))
+        val cmp_right = compareAtomList((#right a), (#right b))
+    in 
+        if (cmp_left = EQUAL) then cmp_right
+        else cmp_left
+    end 
+)
+
+fun compareRedAction (a : ReduceAction, b: ReduceAction) = (
+    let 
+        val cmp_state = compareItemSet ((#state a), (#state b)) 
+        val cmp_prod = compareSimpleProd((#prod a), (#prod b))
+    in 
+        if (cmp_state = EQUAL) then cmp_prod
+        else cmp_state
+    end 
+)
+
+structure REDACTION_KEY : ORD_KEY = struct 
+    type ord_key = ReduceAction
+    fun compare (a : ReduceAction, b: ReduceAction) = 
+end
+
+structure ReduceActionSet = RedBlackSetFn (REDACTION_KEY)
+
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)
 =   let val str = Atom.toString (at) in print (str^" "); printAtomListInItem(atmList) end
