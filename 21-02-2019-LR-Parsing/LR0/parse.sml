@@ -1,6 +1,9 @@
 use "./type.sml";
 use "./grammar.sml";
 
+val stateCounter : int ref = ref 0;
+val stateIdx : StateMapToInt ref = ref StateMap.empty;
+
 fun closureInnerLoopHelper ([], X : Atom.atom, I : State ref) = ()
 |   closureInnerLoopHelper (prod::prodList, X : Atom.atom, I : State ref) 
 =   let
@@ -103,7 +106,12 @@ fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E :
             on = X
         }
     in 
-        T := StateSet.add (!T, J);
+        if (StateMap.inDomain(!stateIdx, J) = false) then (
+            T := StateSet.add (!T, J);
+            (* updating global variables *)
+            stateCounter := !stateCounter + 1;
+            stateIdx := StateMap.insert(!stateIdx, J, !stateCounter)
+        ) else ();
         E := EdgeSet.add (!E, newEdge);
         computeShiftAndGotoInnerLoopHelper(ItemList, I, T, E, Grm)
     end
