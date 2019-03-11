@@ -20,7 +20,7 @@ fun closureInnerLoopHelper ([], X : Atom.atom, I : State ref) = ()
 fun closureProcessItem (It : Item, I : State ref, Grm : Grammar)
 =   let
         val { lhs, bef, aft } = It;
-        val X = List.hd (aft);
+        val X = List.hd (aft) handle Empty => Atom.atom "";
         val {symbols, tokens, rules} = Grm
     in
         if (AtomSet.member(symbols, X)) then (
@@ -67,11 +67,11 @@ printItemSet(!I);   *)
 fun gotoProcessItem (It : Item,  J : State ref, X : Atom.atom)
 =   let 
         val {lhs, bef, aft} = It;
-        val aftHd = List.hd(aft);
+        val aftHd = List.hd(aft) handle Empty => Atom.atom "";
         val newItem : Item = {
             lhs = lhs,
-            bef = List.hd(aft)::bef,
-            aft = List.tl(aft)
+            bef = if(Atom.compare(Atom.atom "", aftHd) = EQUAL) then bef else aftHd::bef,
+            aft = List.tl(aft) handle Empty => []
         }
     in
         if (Atom.same(aftHd,X)) then J := ItemSet.add (!J, newItem)
@@ -97,24 +97,29 @@ fun goto (I : State, X : Atom.atom, Grm : Grammar)
 fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = ()
 |   computeShiftAndGotoInnerLoopHelper (It::ItemList, I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = (
     let 
-        val { lhs, bef, aft } = It;
-        val X = List.hd (aft);
-        val J = goto(I, X, Grm);
-        val newEdge : Edge = {
-            from = I,
-            to = J,
-            on = X
-        }
-    in 
-        if (StateMap.inDomain(!stateIdx, J) = false) then (
-            T := StateSet.add (!T, J);
-            (* updating global variables *)
-            stateCounter := !stateCounter + 1;
-            stateIdx := StateMap.insert(!stateIdx, J, !stateCounter)
-        ) else ();
-        E := EdgeSet.add (!E, newEdge);
-        computeShiftAndGotoInnerLoopHelper(ItemList, I, T, E, Grm)
-    end
+        val { lhs, bef, aft } = It
+    in
+        if (List.null(aft) = false) then (
+            let 
+                val X = List.hd (aft);
+                val J = goto(I, X, Grm);
+                val newEdge : Edge = {
+                    from = I,
+                    to = J,
+                    on = X
+                }
+            in 
+                if (StateMap.inDomain(!stateIdx, J) = false) then (
+                    T := StateSet.add (!T, J);
+                    (* updating global variables *)
+                    stateCounter := !stateCounter + 1;
+                    stateIdx := StateMap.insert(!stateIdx, J, !stateCounter)
+                ) else ();
+                E := EdgeSet.add (!E, newEdge)
+            end
+        ) else ()
+    end;
+    computeShiftAndGotoInnerLoopHelper(ItemList, I, T, E, Grm)
 )
 
 
@@ -197,3 +202,33 @@ fun computeReduceActions (T : StateSet.set ref, R : ReduceActions ref) = (
         computeReduceActionsProcessStates(stateList, R)
     end 
 )
+
+(* LR0 parsing table *)
+
+val T : StateSet.set ref = ref StateSet.empty;
+val E : EdgeSet.set ref = ref EdgeSet.empty;
+val R : ReduceActions ref = ref ReduceActionSet.empty;
+
+computeShiftAndGoto(T, E, startItem, Grm);
+computeReduceActions(T, R);
+
+(* printing results *)
+
+fun printFinalStatesHelper ([]) = (print "======== State List End ========\n")
+|   printFinalStatesHelper (I::stateList) = (
+    let val curr_state_idx = StateMap.lookup(!stateIdx,I) handle NotFound => 0 in 
+        print ("======== State Idx: " ^ Int.toString(curr_state_idx) ^ " ========\n");
+        printItemSet(I);
+        printFinalStatesHelper(stateList)
+    end 
+)
+
+fun printFinalStates (T : StateSet.set ref) = (
+    let 
+        val stateList = StateSet.listItems (!T) 
+    in 
+        printFinalStatesHelper(stateList)
+    end 
+);
+
+printFinalStates(T)
