@@ -149,7 +149,7 @@ end
 
 structure ReduceActionSet = RedBlackSetFn (REDACTION_KEY)
 
-type RedActions = ReduceActionSet.set
+type ReduceActions = ReduceActionSet.set
 
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)

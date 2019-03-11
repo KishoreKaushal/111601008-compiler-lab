@@ -89,6 +89,8 @@ fun goto (I : State, X : Atom.atom, Grm : Grammar)
         (!J)
     end;
 
+(* computing the shift and goto actions *)
+
 fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = ()
 |   computeShiftAndGotoInnerLoopHelper (It::ItemList, I : State, T : StateSet.set ref, E : EdgeSet.set ref, Grm : Grammar) = (
     let 
@@ -149,4 +151,41 @@ startItem : Item, Grm : Grammar) = (
     end;
     (* Initialization done. *)
     computeShiftAndGotoHelper(T, E, Grm)
+);
+
+(* computing the reduce actions *)
+
+fun computeReduceActionsProcessItems ([], I: State, R : ReduceActions ref) = ()
+|   computeReduceActionsProcessItems (It::ItemList, I: State, R : ReduceActions ref) = (
+    let 
+        val { lhs, bef, aft } = It;
+        val newProd : simpleProd = { left = lhs, right = (List.rev bef)};
+        val newRedAct : ReduceAction = {state = I, prod = newProd}
+    in 
+        ( 
+            if (List.null(aft)) then (
+                R := ReduceActionSet.add (!R , newRedAct)
+            ) else ()
+        );
+        computeReduceActionsProcessItems (ItemList, I, R)
+    end 
+)
+
+fun computeReduceActionsProcessStates ([], R : ReduceActions ref) = ()
+|   computeReduceActionsProcessStates (I::stateList, R : ReduceActions ref) = (
+    let 
+        val itemList = ItemSet.listItems(I);
+    in 
+        computeReduceActionsProcessItems (itemList, I, R);
+        computeReduceActionsProcessStates (stateList, R)
+    end
+)
+
+fun computeReduceActions (T : StateSet.set ref, R : ReduceActions ref) = (
+    R := ReduceActionSet.empty ;
+    let 
+        val stateList = StateSet.listItems (!T)
+    in 
+        computeReduceActionsProcessStates(stateList, R)
+    end 
 )
