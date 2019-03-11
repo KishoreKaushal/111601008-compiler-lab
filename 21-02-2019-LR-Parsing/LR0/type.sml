@@ -144,10 +144,12 @@ fun compareRedAction (a : ReduceAction, b: ReduceAction) = (
 
 structure REDACTION_KEY : ORD_KEY = struct 
     type ord_key = ReduceAction
-    fun compare (a : ReduceAction, b: ReduceAction) = 
+    fun compare (a : ReduceAction, b: ReduceAction) = compareRedAction(a, b)
 end
 
 structure ReduceActionSet = RedBlackSetFn (REDACTION_KEY)
+
+type RedActions = ReduceActionSet.set
 
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)
