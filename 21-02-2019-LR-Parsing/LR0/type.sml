@@ -151,6 +151,12 @@ structure ReduceActionSet = RedBlackSetFn (REDACTION_KEY)
 
 type ReduceActions = ReduceActionSet.set
 
+structure StateMap = RedBlackMapFn(STATE_KEY)
+
+type StateMapToInt = int StateMap.map
+
+(**********************HELPER FUNCTIONS BELOW************************)
+
 fun printAtomListInItem ([]) = ()
 |   printAtomListInItem (at::atmList)
 =   let val str = Atom.toString (at) in print (str^" "); printAtomListInItem(atmList) end
