@@ -340,4 +340,27 @@ fun addShiftAndGotoToLr0Tbl (lr0_tbl_ref : Lr0TableMapToAtomSet ref, E : EdgeSet
         val {symbols, tokens, rules} = Grm
     in 
         addEdgeListToLr0Tbl (edgeList, tokens, symbols, lr0_tbl_ref)
+    end;
+
+(* adding accept actions to the table *)
+
+fun addAcceptEntryHelper ([], lr0_tbl_ref : Lr0TableMapToAtomSet ref) = ()
+|   addAcceptEntryHelper (I::stateList, lr0_tbl_ref : Lr0TableMapToAtomSet ref)
+=   let 
+        val sId = StateMap.lookup(!stateIdx,I) handle NotFound => ~1
+    in 
+        if (ItemSet.member(I, acceptItem)) then (
+            addEntryToLr0Tbl(Atom.atom ("a"), sId, Atom.atom "$", lr0_tbl_ref)
+        ) else ();
+        addAcceptEntryHelper(stateList, lr0_tbl_ref)
     end 
+
+fun addAcceptEntry (lr0_tbl_ref : Lr0TableMapToAtomSet ref, T : StateSet.set)
+=   let 
+        val stateList = StateSet.listItems(T)
+    in 
+        addAcceptEntryHelper(stateList, lr0_tbl_ref)
+    end; 
+
+(* printing the lr0 table *)
+

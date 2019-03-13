@@ -48,6 +48,12 @@ val startItem : Item = {
     lhs = Atom.atom "E'",
     bef = List.map Atom.atom [] ,
     aft = List.map Atom.atom ["E", "$"] 
+}
+
+val acceptItem : Item = {
+    lhs = Atom.atom "E'",
+    bef = List.map Atom.atom ["E"],
+    aft = List.map Atom.atom ["$"]
 };
 
 *)
@@ -111,7 +117,14 @@ val startItem : Item = {
     lhs = Atom.atom "S",
     bef = List.map Atom.atom [] ,
     aft = List.map Atom.atom ["E", "$"] 
+}
+
+val acceptItem : Item = {
+    lhs = Atom.atom "S",
+    bef = List.map Atom.atom ["E"],
+    aft = List.map Atom.atom ["$"]
 };
+
 *)
 
 val sym = ref AtomSet.empty ;
@@ -156,4 +169,10 @@ val startItem : Item = {
     lhs = Atom.atom "S'",
     bef = List.map Atom.atom [] ,
     aft = List.map Atom.atom ["S", "$"] 
+}
+
+val acceptItem : Item = {
+    lhs = Atom.atom "S'",
+    bef = List.map Atom.atom ["S"],
+    aft = List.map Atom.atom ["$"]
 };
