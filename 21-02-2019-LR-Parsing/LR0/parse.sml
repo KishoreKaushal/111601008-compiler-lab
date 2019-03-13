@@ -19,7 +19,7 @@ fun mapProdToIntProcessRhsLst ([], X) = ()
         prodCounter := !prodCounter + 1;
         prodIdx := ProdMap.insert(!prodIdx, prod, !prodCounter);
         (* printing the production mapping *)
-        print ("========== Production: "^Int.toString(!prodCounter)^" ==========");
+        print ("========== Production: "^Int.toString(!prodCounter)^" ==========>> ");
         printSimpleProd(prod);
         print "\n";
         mapProdToIntProcessRhsLst(rhsLst,X)
@@ -140,10 +140,9 @@ fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E :
             in 
                 if (StateMap.inDomain(!stateIdx, J) = false) then (
                     T := StateSet.add (!T, J);
-                    (* updating global variables *)
-                    stateCounter := !stateCounter + 1;
-                    print("Inserting State : "^Int.toString(!stateCounter)^"\n");
-                    stateIdx := StateMap.insert(!stateIdx, J, !stateCounter)
+                    (* updating state counter *)
+                    stateIdx := StateMap.insert(!stateIdx, J, !stateCounter);
+                    stateCounter := !stateCounter + 1
                 ) else ();
                 E := EdgeSet.add (!E, newEdge)
             end
@@ -190,7 +189,10 @@ startItem : Item, Grm : Grammar) = (
     in 
         I := ItemSet.add (!I, startItem);
         closure(I, Grm);
-        T := StateSet.add(!T, !I)
+        T := StateSet.add(!T, !I);
+        (* updating state counter *)
+        stateIdx := StateMap.insert(!stateIdx, !I, !stateCounter);
+        stateCounter := !stateCounter + 1
     end;
     (* Initialization done. *)
     computeShiftAndGotoHelper(T, E, Grm)
