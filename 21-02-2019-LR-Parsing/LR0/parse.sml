@@ -235,7 +235,7 @@ fun computeReduceActions (T : StateSet.set ref, R : ReduceActions ref) = (
     end 
 )
 
-(* LR0 parsing table *)
+(* computing states & shift/goto and reduce actions *)
 
 val T : StateSet.set ref = ref StateSet.empty;
 val E : EdgeSet.set ref = ref EdgeSet.empty;
@@ -263,4 +263,53 @@ fun printFinalStates (T : StateSet.set ref) = (
     end 
 );
 
-printFinalStates(T)
+printFinalStates(T);
+
+(* LR0 parsing table *)
+
+val lr0_tbl_ref : Lr0TableMapToAtomSet ref = ref Lr0TableMap.empty;
+
+fun addReduceEntryHelper ([], entry : Atom.atom, sId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref) = ()
+|   addReduceEntryHelper (tok::tokenList , entry : Atom.atom, sId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref)
+=   let 
+        val key = (sId, tok);
+        (* val initSet = Lr0TableMap.lookup(!lr0_tbl_ref, key) handle NotFound => AtomSet.empty *)
+        val (tempLr0 , initSet) = Lr0TableMap.remove (!lr0_tbl_ref , key) handle LibBase.NotFound => (!lr0_tbl_ref, AtomSet.empty)
+    in
+        lr0_tbl_ref := Lr0TableMap.insert(tempLr0, key, AtomSet.add(initSet, entry));
+
+        addReduceEntryHelper(tokenList, entry, sId, lr0_tbl_ref)
+    end 
+
+fun addReduceEntry (sId : int, pId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref)
+=   let 
+        val entry = Atom.atom ("r"^Int.toString(pId));
+        val tokenList = AtomSet.listItems (#tokens Grm)
+    in 
+        addReduceEntryHelper(tokenList, entry, sId, lr0_tbl_ref)
+    end 
+
+fun addReduceActionLstToLr0Tbl ([], lr0_tbl_ref : Lr0TableMapToAtomSet ref, R : ReduceActions) = ()
+|   addReduceActionLstToLr0Tbl (r::redActionsLst, lr0_tbl_ref, R) 
+=   let 
+        val {state, prod} = r;
+        (* lookup state and production idx *)
+        val pIdOpt : int option = ProdMap.find(!prodIdx, prod);
+        val sIdOpt : int option = StateMap.find(!stateIdx, state)
+    in 
+        case pIdOpt of NONE => ()
+        |   SOME pId    => (
+            case sIdOpt of NONE => ()
+            |   SOME sId    => (
+                addReduceEntry(sId, pId, lr0_tbl_ref)
+            )
+        );
+        addReduceActionLstToLr0Tbl(redActionsLst, lr0_tbl_ref, R)
+    end 
+
+fun addReduceActionsToLr0Tbl (lr0_tbl_ref : Lr0TableMapToAtomSet ref, R : ReduceActions)
+=   let 
+        val redActionsLst = ReduceActionSet.listItems(R)
+    in
+        addReduceActionLstToLr0Tbl(redActionsLst, lr0_tbl_ref, R)
+    end ;

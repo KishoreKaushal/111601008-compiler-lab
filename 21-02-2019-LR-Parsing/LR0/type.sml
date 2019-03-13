@@ -162,7 +162,22 @@ type StateMapToInt = int StateMap.map
 
 structure ProdMap = RedBlackMapFn(PROD_KEY)
 
-type ProdMapToInt = int ProdMap.map
+type ProdMapToInt = int ProdMap.map;
+
+(* LR0 *)
+
+structure LR0_KEY : ORD_KEY = struct
+    (* complete this *)
+    type ord_key = (int * Atom.atom)
+    fun compare ((a:ord_key , b:ord_key))   = case Int.compare((#1 a), (#1 b)) of 
+                                                EQUAL => (Atom.lexCompare((#2 a), (#2 b)) )
+                                            |   LESS => LESS 
+                                            |   GREATER => GREATER
+end
+
+structure Lr0TableMap = RedBlackMapFn (LR0_KEY)
+
+type Lr0TableMapToAtomSet = AtomSet.set Lr0TableMap.map
 
 (**********************HELPER FUNCTIONS BELOW************************)
 
