@@ -16,13 +16,13 @@ fun mapProdToIntProcessRhsLst ([], X) = ()
             right = rhs
         } 
     in 
-        prodCounter := !prodCounter + 1;
         prodIdx := ProdMap.insert(!prodIdx, prod, !prodCounter);
         (* printing the production mapping *)
         print ("========== Production: "^Int.toString(!prodCounter)^" ==========>> ");
         printSimpleProd(prod);
         print "\n";
-        mapProdToIntProcessRhsLst(rhsLst,X)
+        prodCounter := !prodCounter + 1;
+        mapProdToIntProcessRhsLst(rhsLst, X)
     end 
 )
 
