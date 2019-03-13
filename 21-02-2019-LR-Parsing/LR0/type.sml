@@ -120,8 +120,6 @@ structure EdgeSet = RedBlackSetFn (EDGE_KEY)
 
 type simpleProd = { left : Atom.atom, right: Atom.atom list }
 
-type ReduceAction = { state: State, prod: simpleProd }
-
 fun compareSimpleProd (a : simpleProd, b : simpleProd) = (
     let 
         val cmp_left = Atom.compare((#left a), (#left b))
@@ -131,6 +129,13 @@ fun compareSimpleProd (a : simpleProd, b : simpleProd) = (
         else cmp_left
     end 
 )
+
+structure PROD_KEY : ORD_KEY = struct 
+    type ord_key = simpleProd
+    fun compare (a : simpleProd, b : simpleProd) = compareSimpleProd(a,b)
+end 
+
+type ReduceAction = { state: State, prod: simpleProd }
 
 fun compareRedAction (a : ReduceAction, b: ReduceAction) = (
     let 
@@ -155,6 +160,10 @@ structure StateMap = RedBlackMapFn(STATE_KEY)
 
 type StateMapToInt = int StateMap.map
 
+structure ProdMap = RedBlackMapFn(PROD_KEY)
+
+type ProdMapToInt = int ProdMap.map
+
 (**********************HELPER FUNCTIONS BELOW************************)
 
 fun printAtomListInItem ([]) = ()
@@ -178,3 +187,13 @@ fun printItemList ([]) = ()
 
 fun printItemSet (I : ItemSet.set)
 =   let val itemList = ItemSet.listItems(I) in printItemList(itemList) end 
+
+fun printSimpleProd (sProd : simpleProd) = (
+    let 
+        val {right , left} = sProd
+    in 
+        print (Atom.toString(left));
+        print (" -> ");
+        printAtomListInItem(right)
+    end 
+)

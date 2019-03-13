@@ -2,7 +2,51 @@ use "./type.sml";
 use "./grammar.sml";
 
 val stateCounter : int ref = ref 0;
+val prodCounter : int ref = ref 0;
 val stateIdx : StateMapToInt ref = ref StateMap.empty;
+val prodIdx : ProdMapToInt ref = ref ProdMap.empty;
+
+(* functions for mapping productions to int *)
+
+fun mapProdToIntProcessRhsLst ([], X) = ()
+|   mapProdToIntProcessRhsLst (rhs::rhsLst, X) = (
+    let 
+        val prod : simpleProd = {
+            left = X,
+            right = rhs
+        } 
+    in 
+        prodCounter := !prodCounter + 1;
+        prodIdx := ProdMap.insert(!prodIdx, prod, !prodCounter);
+        (* printing the production mapping *)
+        print ("========== Production: "^Int.toString(!prodCounter)^" ==========");
+        printSimpleProd(prod);
+        print "\n";
+        mapProdToIntProcessRhsLst(rhsLst,X)
+    end 
+)
+
+fun mapProdToIntProcessRulesLst ([]) = ()
+|   mapProdToIntProcessRulesLst (r::rulesLst) 
+=   let 
+        val (X, rhsSet) = r
+    in 
+        mapProdToIntProcessRhsLst(RHSSet.listItems(rhsSet), X);
+        mapProdToIntProcessRulesLst(rulesLst)
+    end    
+
+fun mapProdToInt (Grm : Grammar) = (
+    let 
+        val rules = (#rules Grm);
+        val rulesLst = AtomMap.listItemsi(rules)
+    in
+        mapProdToIntProcessRulesLst(rulesLst)
+    end
+);
+
+mapProdToInt(Grm);
+
+(* functions for computing closure *)
 
 fun closureInnerLoopHelper ([], X : Atom.atom, I : State ref) = ()
 |   closureInnerLoopHelper (prod::prodList, X : Atom.atom, I : State ref) 
@@ -47,22 +91,7 @@ fun closure (I : State ref, Grm : Grammar)
         else ()
     end;
 
-(* Test for closure *)
-(* 
-val I : State ref = ref ItemSet.empty ;
-
-
-val It : Item = {
-    lhs = Atom.atom "E'",
-    bef = List.map Atom.atom [] ,
-    aft = List.map Atom.atom ["E", "$"] 
-};
-
-I := ItemSet.add (!I , It);
-
-closure(I, Grm);
-
-printItemSet(!I);   *)
+(* functions for computing goto and shift items *)
 
 fun gotoProcessItem (It : Item,  J : State ref, X : Atom.atom)
 =   let 
@@ -113,6 +142,7 @@ fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E :
                     T := StateSet.add (!T, J);
                     (* updating global variables *)
                     stateCounter := !stateCounter + 1;
+                    print("Inserting State : "^Int.toString(!stateCounter)^"\n");
                     stateIdx := StateMap.insert(!stateIdx, J, !stateCounter)
                 ) else ();
                 E := EdgeSet.add (!E, newEdge)
@@ -216,7 +246,7 @@ computeReduceActions(T, R);
 
 fun printFinalStatesHelper ([]) = (print "======== State List End ========\n")
 |   printFinalStatesHelper (I::stateList) = (
-    let val curr_state_idx = StateMap.lookup(!stateIdx,I) handle NotFound => 0 in 
+    let val curr_state_idx = StateMap.lookup(!stateIdx,I) handle NotFound => ~1 in 
         print ("======== State Idx: " ^ Int.toString(curr_state_idx) ^ " ========\n");
         printItemSet(I);
         printFinalStatesHelper(stateList)
