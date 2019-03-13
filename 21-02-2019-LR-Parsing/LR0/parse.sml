@@ -265,21 +265,24 @@ fun printFinalStates (T : StateSet.set ref) = (
 
 printFinalStates(T);
 
-(* LR0 parsing table *)
+(********************** LR0 parsing table **********************)
+
+fun addEntryToLr0Tbl (entry: Atom.atom, sId : int, term: Atom.atom, lr0_tbl_ref : Lr0TableMapToAtomSet ref) 
+=   let 
+        val key = (sId, term);
+        val (tempLr0 , initSet) = Lr0TableMap.remove (!lr0_tbl_ref , key) handle LibBase.NotFound => (!lr0_tbl_ref, AtomSet.empty)
+    in 
+        lr0_tbl_ref := Lr0TableMap.insert(tempLr0, key, AtomSet.add(initSet, entry))
+    end
+
+(* adding reduce actions entry to the table *)
 
 val lr0_tbl_ref : Lr0TableMapToAtomSet ref = ref Lr0TableMap.empty;
 
 fun addReduceEntryHelper ([], entry : Atom.atom, sId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref) = ()
 |   addReduceEntryHelper (tok::tokenList , entry : Atom.atom, sId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref)
-=   let 
-        val key = (sId, tok);
-        (* val initSet = Lr0TableMap.lookup(!lr0_tbl_ref, key) handle NotFound => AtomSet.empty *)
-        val (tempLr0 , initSet) = Lr0TableMap.remove (!lr0_tbl_ref , key) handle LibBase.NotFound => (!lr0_tbl_ref, AtomSet.empty)
-    in
-        lr0_tbl_ref := Lr0TableMap.insert(tempLr0, key, AtomSet.add(initSet, entry));
+= (addEntryToLr0Tbl (entry, sId, tok, lr0_tbl_ref); addReduceEntryHelper(tokenList, entry, sId, lr0_tbl_ref))
 
-        addReduceEntryHelper(tokenList, entry, sId, lr0_tbl_ref)
-    end 
 
 fun addReduceEntry (sId : int, pId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref)
 =   let 
@@ -313,3 +316,28 @@ fun addReduceActionsToLr0Tbl (lr0_tbl_ref : Lr0TableMapToAtomSet ref, R : Reduce
     in
         addReduceActionLstToLr0Tbl(redActionsLst, lr0_tbl_ref, R)
     end ;
+
+(* adding shift actions entry to the table *)
+
+fun addEdgeListToLr0Tbl ([], term: AtomSet.set, nonTerm: AtomSet.set, lr0_tbl_ref : Lr0TableMapToAtomSet ref) = ()
+|   addEdgeListToLr0Tbl (edge::edgeLst, term, nonTerm, lr0_tbl_ref)
+=   let
+        val {from, to, on} = edge;
+        val fromIdx = StateMap.lookup(!stateIdx,from) handle NotFound => ~1;
+        val toIdx = StateMap.lookup(!stateIdx,to) handle NotFound => ~1
+    in 
+        if (AtomSet.member(term, on)) then (
+            addEntryToLr0Tbl(Atom.atom ("s"^Int.toString(toIdx)), fromIdx, on, lr0_tbl_ref)
+        ) else if (AtomSet.member(nonTerm, on)) then (
+            addEntryToLr0Tbl(Atom.atom ("g"^Int.toString(toIdx)), fromIdx, on, lr0_tbl_ref)
+        ) else ();
+        addEdgeListToLr0Tbl (edgeLst, term, nonTerm, lr0_tbl_ref)
+    end 
+
+fun addShiftAndGotoToLr0Tbl (lr0_tbl_ref : Lr0TableMapToAtomSet ref, E : EdgeSet.set)
+=   let
+        val edgeList = EdgeSet.listItems(E);
+        val {symbols, tokens, rules} = Grm
+    in 
+        addEdgeListToLr0Tbl (edgeList, tokens, symbols, lr0_tbl_ref)
+    end 
