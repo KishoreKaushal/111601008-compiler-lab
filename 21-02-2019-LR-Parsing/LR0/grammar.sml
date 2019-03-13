@@ -50,6 +50,12 @@ val startItem : Item = {
     aft = List.map Atom.atom ["E", "$"] 
 }
 
+val endItem : Item = {
+    lhs = Atom.atom "E'",
+    bef = List.map Atom.atom ["$", "E"], 
+    aft = List.map Atom.atom []
+}
+
 val acceptItem : Item = {
     lhs = Atom.atom "E'",
     bef = List.map Atom.atom ["E"],
@@ -119,6 +125,12 @@ val startItem : Item = {
     aft = List.map Atom.atom ["E", "$"] 
 }
 
+val endItem : Item = {
+    lhs = Atom.atom "S",
+    bef = List.map Atom.atom ["$", "E"] ,
+    aft = List.map Atom.atom []
+}
+
 val acceptItem : Item = {
     lhs = Atom.atom "S",
     bef = List.map Atom.atom ["E"],
@@ -170,6 +182,13 @@ val startItem : Item = {
     bef = List.map Atom.atom [] ,
     aft = List.map Atom.atom ["S", "$"] 
 }
+
+val endItem : Item = {
+    lhs = Atom.atom "S'",
+    bef = List.map Atom.atom ["$", "S"], 
+    aft = List.map Atom.atom []
+}
+
 
 val acceptItem : Item = {
     lhs = Atom.atom "S'",

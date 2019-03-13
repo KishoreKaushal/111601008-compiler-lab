@@ -138,13 +138,15 @@ fun computeShiftAndGotoInnerLoopHelper ([], I : State, T : StateSet.set ref, E :
                     on = X
                 }
             in 
-                if (StateMap.inDomain(!stateIdx, J) = false) then (
-                    T := StateSet.add (!T, J);
-                    (* updating state counter *)
-                    stateIdx := StateMap.insert(!stateIdx, J, !stateCounter);
-                    stateCounter := !stateCounter + 1
-                ) else ();
-                E := EdgeSet.add (!E, newEdge)
+                if (Atom.same(X , Atom.atom "$") = false) then (
+                    if (StateMap.inDomain(!stateIdx, J) = false) then (
+                        T := StateSet.add (!T, J);
+                        (* updating state counter *)
+                        stateIdx := StateMap.insert(!stateIdx, J, !stateCounter);
+                        stateCounter := !stateCounter + 1
+                    ) else ();
+                    E := EdgeSet.add (!E, newEdge)
+                )  else ()
             end
         ) else ()
     end;
