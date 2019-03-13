@@ -235,16 +235,16 @@ fun computeReduceActions (T : StateSet.set ref, R : ReduceActions ref) = (
     end 
 )
 
-(* computing states & shift/goto and reduce actions *)
+(* computing states & shift/goto and reduce actions
 
 val T : StateSet.set ref = ref StateSet.empty;
 val E : EdgeSet.set ref = ref EdgeSet.empty;
 val R : ReduceActions ref = ref ReduceActionSet.empty;
 
 computeShiftAndGoto(T, E, startItem, Grm);
-computeReduceActions(T, R);
+computeReduceActions(T, R); *)
 
-(* printing results *)
+(* function for printing states *)
 
 fun printFinalStatesHelper ([]) = (print "======== State List End ========\n")
 |   printFinalStatesHelper (I::stateList) = (
@@ -263,9 +263,7 @@ fun printFinalStates (T : StateSet.set ref) = (
     end 
 );
 
-printFinalStates(T);
-
-(********************** LR0 parsing table **********************)
+(********************** functions for computing LR0 parsing table **********************)
 
 fun addEntryToLr0Tbl (entry: Atom.atom, sId : int, term: Atom.atom, lr0_tbl_ref : Lr0TableMapToAtomSet ref) 
 =   let 
@@ -276,8 +274,6 @@ fun addEntryToLr0Tbl (entry: Atom.atom, sId : int, term: Atom.atom, lr0_tbl_ref 
     end
 
 (* adding reduce actions entry to the table *)
-
-val lr0_tbl_ref : Lr0TableMapToAtomSet ref = ref Lr0TableMap.empty;
 
 fun addReduceEntryHelper ([], entry : Atom.atom, sId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref) = ()
 |   addReduceEntryHelper (tok::tokenList , entry : Atom.atom, sId : int, lr0_tbl_ref : Lr0TableMapToAtomSet ref)
@@ -364,3 +360,43 @@ fun addAcceptEntry (lr0_tbl_ref : Lr0TableMapToAtomSet ref, T : StateSet.set)
 
 (* printing the lr0 table *)
 
+fun printLr0EntryList ([]) = (print "=================================\n")
+|   printLr0EntryList (le::lr0EntryList) 
+=   let 
+        val (key, data) = le;
+        val (sId, Y) = key;
+        val atmLst = AtomSet.listItems(data)
+    in 
+        print ("("^ Int.toString(sId) ^ ", " ^ Atom.toString(Y) ^") : ");
+        printAtomListInItem (atmLst);
+        print "\n";
+        printLr0EntryList (lr0EntryList)
+    end
+
+fun printLr0Table (lr0Tbl : Lr0TableMapToAtomSet)
+=   let 
+        val lr0EntryList = Lr0TableMap.listItemsi(lr0Tbl)
+    in 
+        print ("\n============ LR0 Table ============\n");
+        printLr0EntryList (lr0EntryList)
+    end ;
+
+(* finally computing the lr0 table *)
+
+fun computeLr0Table ()
+=   let 
+        val lr0_tbl_ref : Lr0TableMapToAtomSet ref = ref Lr0TableMap.empty;
+        val T : StateSet.set ref = ref StateSet.empty;
+        val E : EdgeSet.set ref = ref EdgeSet.empty;
+        val R : ReduceActions ref = ref ReduceActionSet.empty;
+    in 
+        computeShiftAndGoto(T, E, startItem, Grm);
+        computeReduceActions(T, R);
+        printFinalStates(T);
+        addShiftAndGotoToLr0Tbl (lr0_tbl_ref, !E);
+        addReduceActionsToLr0Tbl (lr0_tbl_ref, !R);
+        addAcceptEntry (lr0_tbl_ref, !T);
+        !lr0_tbl_ref
+    end;
+
+printLr0Table(computeLr0Table())
