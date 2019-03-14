@@ -1,15 +1,22 @@
 type pos = int
-type lexresult = Tokens.token
 
-val lineNum = ErrorMsg.lineNum
-val linePos = ErrorMsg.linePos
-fun err(p1,p2) = ErrorMsg.error p1
+type svalue        = Tokens.svalue
+type ('a,'b) token = ('a,'b) Tokens.token
+type lexresult     = (svalue,pos) token
 
-fun eof() = let val pos = hd(!linePos) in Tokens.EOF(pos,pos) end
-fun IntFromString str = let val SOME x = Int.fromString str in x end
+fun eof() = Tokens.EOF(0,0)
+fun IntFromString str = let
+                            val x = Int.fromString str
+                        in
+                            case x of
+                                    SOME n => n
+                                |   NONE => 0
+                        end
+
 fun toStrConst str = String.substring (str , 1 , (String.size str) - 2)
 
 %%
+%header (functor MinCLexFun (structure Tokens : MinC_TOKENS));
 %s STR;
 digit = [0-9] ;
 eol = ("\n\r"|"\r\n"|"\r"|"\n") ;
@@ -18,9 +25,7 @@ letter = [a-zA-Z]   ;
 esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 %%
 
-<INITIAL> {eol} => (lineNum := !lineNum+1; 
-                    linePos := yypos :: !linePos;
-                    continue());
+<INITIAL> {eol} => (continue());
 
 <INITIAL> {whitespace}+ => (continue());
 
@@ -50,8 +55,8 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 <INITIAL> int         => (Tokens.INT (yypos, yypos+3));
 <INITIAL> string      => (Tokens.STRING (yypos, yypos+6));
 <INITIAL> bool        => (Tokens.BOOL (yypos , yypos+4));
-<INITIAL> true        => (Tokens.TRUE (yypos , yypos+4));
-<INITIAL> false        => (Tokens.FALSE (yypos , yypos+4));
+<INITIAL> true        => (Tokens.TRUE (true, yypos , yypos+4));
+<INITIAL> false        => (Tokens.FALSE (false, yypos , yypos+4));
 <INITIAL> {digit}+    => (Tokens.NUMCONST(IntFromString yytext, 
                             yypos, yypos + size yytext));
 

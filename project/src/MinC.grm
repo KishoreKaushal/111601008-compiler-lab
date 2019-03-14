@@ -20,10 +20,10 @@
 %nonterm	program  		of Ast.program
 		|	declarationList of Ast.declaration list
 		|	declaration		of Ast.declaration
-		|	varDeclaration	of Ast.VARDEC
 		|	typeSpecifier	of Ast.typeSpecifier
 		|	varDeclList		of Ast.varDeclId list
 		|	varDeclId		of Ast.varDeclId
+		|	varDeclaration	of Ast.declaration
 
 %keyword INT STRING BOOL TRUE FALSE
 
@@ -63,7 +63,7 @@ varDeclList			:	varDeclId							([varDeclId])
 					|	varDeclId COMMA varDeclList			(varDeclId::varDeclList)
 
 varDeclId			:	ID									(Ast.VARDEC_IDEN(ID))
-					|	ID	LBRACK INT RBRACK				(Ast.VARDEC_ARR_IDEN(ID , INT))
+					|	ID	LBRACK NUMCONST RBRACK			(Ast.VARDEC_ARR_IDEN(ID , NUMCONST))
 
 typeSpecifier		:	INT									(Ast.INT)
 					|	BOOL								(Ast.BOOL)

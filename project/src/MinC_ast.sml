@@ -18,8 +18,8 @@ structure Ast = struct
                          (* | FUNDEC of funDeclaration *)
 
     and varDeclId = VARDEC_IDEN of ID
-                  | VAREC_ARR_IDEN of (ID * NUMCONST)
-                  | VARDEC_INIT of (ID * exp)
+                  | VARDEC_ARR_IDEN of (ID * NUMCONST)
+                  (* | VARDEC_INIT of (ID * exp) *)
 
     (* and funDeclaration = RETFUNC of (typeSpecifier * ID * param list * statement) *)
 
