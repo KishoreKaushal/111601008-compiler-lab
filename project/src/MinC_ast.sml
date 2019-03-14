@@ -6,6 +6,8 @@ structure Ast = struct
 
     type STRINGCONST = string
 
+    type BOOLCONST = bool
+
     datatype binop = PLUS | MINUS | TIMES | DIVIDE | MOD
 
     datatype relop = GT | GE | LT | LE | EQ | NEQ
@@ -19,7 +21,7 @@ structure Ast = struct
 
     and varDeclId = VARDEC_IDEN of ID
                   | VARDEC_ARR_IDEN of (ID * NUMCONST)
-                  (* | VARDEC_INIT of (ID * exp) *)
+                  | VARDEC_INIT of (ID * simpleExpression)
 
     (* and funDeclaration = RETFUNC of (typeSpecifier * ID * param list * statement) *)
 
@@ -33,12 +35,17 @@ structure Ast = struct
                     | RET_STMT of returnStmt *)
 
     (* and expression  = SIMP_EXP of simpleExpression
-                    | ASSIGNMENT of (mutable * expression)
+                    | ASSIGNMENT of (mutable * expression) *)
     
-    and simpleExpression = OPERATION of (expression * binop * expression)
+    and simpleExpression = IMMUTABLE of (immutable)
+                        (* | OPERATION of (expression * binop * expression)
                         | RELATION of (expression * relop * expression)
                         | BOOLEAN of (expression * boolop * expression)
-                        | UNARY of (unaryop * expression)  *)
+                        | UNARY of (unaryop * expression)   *)
+    
+    and immutable = NUM_CONST of NUMCONST 
+                |   STRING_CONST of STRINGCONST
+                |   BOOL_CONST of BOOLCONST
 
     (* and mutable = MUT_IDEN of ID
                 | MUT_ARR of (mutable * expression)

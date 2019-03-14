@@ -55,8 +55,8 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 <INITIAL> int         => (Tokens.INT (yypos, yypos+3));
 <INITIAL> string      => (Tokens.STRING (yypos, yypos+6));
 <INITIAL> bool        => (Tokens.BOOL (yypos , yypos+4));
-<INITIAL> true        => (Tokens.TRUE (true, yypos , yypos+4));
-<INITIAL> false        => (Tokens.FALSE (false, yypos , yypos+4));
+<INITIAL> true        => (Tokens.BOOLCONST (true, yypos , yypos+4));
+<INITIAL> false        => (Tokens.BOOLCONST (false, yypos , yypos+4));
 <INITIAL> {digit}+    => (Tokens.NUMCONST(IntFromString yytext, 
                             yypos, yypos + size yytext));
 
