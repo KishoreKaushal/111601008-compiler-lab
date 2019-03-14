@@ -52,6 +52,7 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 <INITIAL> ";"         => (Tokens.SEMICOLON (yypos, yypos+1));
 <INITIAL> ":"         => (Tokens.COLON (yypos, yypos+1));
 <INITIAL> ","	      => (Tokens.COMMA (yypos, yypos+1));
+<INITIAL> "%"	      => (Tokens.MOD (yypos, yypos+1));
 <INITIAL> int         => (Tokens.INT (yypos, yypos+3));
 <INITIAL> string      => (Tokens.STRING (yypos, yypos+6));
 <INITIAL> bool        => (Tokens.BOOL (yypos , yypos+4));

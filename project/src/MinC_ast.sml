@@ -38,8 +38,8 @@ structure Ast = struct
                     | ASSIGNMENT of (mutable * expression) *)
     
     and simpleExpression = IMMUTABLE of (immutable)
-                        (* | OPERATION of (expression * binop * expression)
-                        | RELATION of (expression * relop * expression)
+                        | OPERATION of (simpleExpression * binop * simpleExpression)
+                        (*| RELATION of (expression * relop * expression)
                         | BOOLEAN of (expression * boolop * expression)
                         | UNARY of (unaryop * expression)   *)
     

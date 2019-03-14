@@ -68,6 +68,11 @@ varDeclId			:	ID									(Ast.VARDEC_IDEN(ID))
 					|	ID COLON simpleExpression			(Ast.VARDEC_INIT(ID, simpleExpression))
 
 simpleExpression	:	immutable							(Ast.IMMUTABLE(immutable))
+					|	simpleExpression PLUS simpleExpression		(Ast.OPERATION(simpleExpression1, Ast.PLUS, simpleExpression2))
+					|	simpleExpression MINUS simpleExpression		(Ast.OPERATION(simpleExpression1, Ast.MINUS, simpleExpression2))
+					|	simpleExpression TIMES simpleExpression		(Ast.OPERATION(simpleExpression1, Ast.TIMES, simpleExpression2))
+					|	simpleExpression DIVIDE simpleExpression	(Ast.OPERATION(simpleExpression1, Ast.DIVIDE, simpleExpression2))
+					|	simpleExpression MOD simpleExpression		(Ast.OPERATION(simpleExpression1, Ast.MOD, simpleExpression2))
 
 immutable			:	NUMCONST							(Ast.NUM_CONST(NUMCONST))
 					|	STRINGCONST							(Ast.STRING_CONST(STRINGCONST))
