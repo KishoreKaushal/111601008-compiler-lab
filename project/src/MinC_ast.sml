@@ -17,18 +17,18 @@ structure Ast = struct
     datatype boolop = AND | OR | XOR
 
     datatype declaration = VARDEC of (typeSpecifier * varDeclId list)
-                         (* | FUNDEC of funDeclaration *)
+                         | FUNDEC of funDeclaration
 
     and varDeclId = VARDEC_IDEN of ID
                   | VARDEC_ARR_IDEN of (ID * NUMCONST)
                   | VARDEC_INIT of (ID * simpleExpression)
 
-    (* and funDeclaration = RETFUNC of (typeSpecifier * ID * param list * statement) *)
+    and funDeclaration = RETFUNC of (typeSpecifier * ID * param list * declaration)
 
-    (* and param = PARAM of ( typeSpecifier * paramId list ) *)
+    and param = PARAM of ( typeSpecifier * paramId list )
 
-    (* and paramId = PARAM_IDEN of ID 
-                | PARAM_ARR_IDEN of ID *)
+    and paramId = PARAM_IDEN of ID 
+                | PARAM_ARR_IDEN of ID
 
     (* and statement   = EXPR_STMT of (expression option)
                     | SEL_STMT of selectionStmt

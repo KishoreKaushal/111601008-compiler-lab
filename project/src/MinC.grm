@@ -23,6 +23,11 @@
 		|	varDeclList		of Ast.varDeclId list
 		|	varDeclId		of Ast.varDeclId
 		|	varDeclaration	of Ast.declaration
+		|	funDeclaration	of Ast.funDeclaration
+		|	paramList		of Ast.param list
+		|	param			of Ast.param
+		|	paramIdList		of Ast.paramId list
+		|	paramId			of Ast.paramId
 		|	simpleExpression	of Ast.simpleExpression
 		|	immutable		of Ast.immutable
 
@@ -56,7 +61,8 @@ program				:	declarationList						(declarationList)
 declarationList		:	declaration declarationList			(declaration::declarationList)
 					|										([])
 
-declaration			:	varDeclaration						(varDeclaration)
+declaration			:	funDeclaration						(Ast.FUNDEC(funDeclaration))
+					|	varDeclaration						(varDeclaration)
 
 varDeclaration		:	typeSpecifier varDeclList SEMICOLON (Ast.VARDEC(typeSpecifier , varDeclList))
 
@@ -66,6 +72,20 @@ varDeclList			:	varDeclId							([varDeclId])
 varDeclId			:	ID									(Ast.VARDEC_IDEN(ID))
 					|	ID	LBRACK NUMCONST RBRACK			(Ast.VARDEC_ARR_IDEN(ID , NUMCONST))
 					|	ID COLON simpleExpression			(Ast.VARDEC_INIT(ID, simpleExpression))
+
+funDeclaration		:	typeSpecifier ID LPAREN paramList RPAREN LBRACE varDeclaration RBRACE
+															(Ast.RETFUNC(typeSpecifier, ID, paramList, varDeclaration))
+
+paramList			:	param SEMICOLON paramList			(param::paramList)
+					|	param								([param])
+
+param				:	typeSpecifier paramIdList			(Ast.PARAM(typeSpecifier, paramIdList))
+
+paramIdList			:	paramId COMMA paramIdList			(paramId::paramIdList)
+					|	paramId								([paramId])
+
+paramId				:	ID									(Ast.PARAM_IDEN(ID))
+					|	ID LBRACK RBRACK					(Ast.PARAM_ARR_IDEN(ID))
 
 simpleExpression	:	immutable							(Ast.IMMUTABLE(immutable))
 					|	simpleExpression PLUS simpleExpression		(Ast.OPERATION(simpleExpression1, Ast.PLUS, simpleExpression2))
