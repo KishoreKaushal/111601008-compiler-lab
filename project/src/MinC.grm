@@ -36,6 +36,7 @@
 		|	expression		of Ast.expression
 		|	localDeclaration of Ast.statement
 		|	mutable 		of Ast.mutable
+		|	retStmt			of Ast.returnStmt
 
 %keyword INT STRING BOOL
 
@@ -87,6 +88,10 @@ statementList		:	statement statementList				(statement::statementList)
 
 statement			:	exprStmt							(exprStmt)
 					|	localDeclaration					(localDeclaration)
+					|	retStmt								(Ast.RET_STMT(retStmt))
+
+retStmt				:	RETURN SEMICOLON					(Ast.RETNOTHING)
+					|	RETURN expression SEMICOLON			(Ast.RETEXPR(expression))
 
 localDeclaration	:	typeSpecifier varDeclList SEMICOLON (Ast.LOCAL_VARDEC(typeSpecifier , varDeclList))
 

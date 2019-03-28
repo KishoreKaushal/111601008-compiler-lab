@@ -53,11 +53,12 @@ esc = ("\a"|"\b"|"\f"|"\n"|"\r"|"\t"|"\v");
 <INITIAL> ":"         => (Tokens.COLON (yypos, yypos+1));
 <INITIAL> ","	      => (Tokens.COMMA (yypos, yypos+1));
 <INITIAL> "%"	      => (Tokens.MOD (yypos, yypos+1));
+<INITIAL> return      => (Tokens.RETURN (yypos , yypos+6));
 <INITIAL> int         => (Tokens.INT (yypos, yypos+3));
 <INITIAL> string      => (Tokens.STRING (yypos, yypos+6));
 <INITIAL> bool        => (Tokens.BOOL (yypos , yypos+4));
 <INITIAL> true        => (Tokens.BOOLCONST (true, yypos , yypos+4));
-<INITIAL> false        => (Tokens.BOOLCONST (false, yypos , yypos+4));
+<INITIAL> false       => (Tokens.BOOLCONST (false, yypos , yypos+4));
 <INITIAL> {digit}+    => (Tokens.NUMCONST(IntFromString yytext, 
                             yypos, yypos + size yytext));
 
