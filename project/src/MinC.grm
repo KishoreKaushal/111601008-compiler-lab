@@ -30,6 +30,12 @@
 		|	paramId			of Ast.paramId
 		|	simpleExpression	of Ast.simpleExpression
 		|	immutable		of Ast.immutable
+		|	statementList	of Ast.statement list
+		|	statement		of Ast.statement
+		|	exprStmt		of Ast.statement
+		|	expression		of Ast.expression
+		|	localDeclaration of Ast.statement
+		|	mutable 		of Ast.mutable
 
 %keyword INT STRING BOOL
 
@@ -73,8 +79,25 @@ varDeclId			:	ID									(Ast.VARDEC_IDEN(ID))
 					|	ID	LBRACK NUMCONST RBRACK			(Ast.VARDEC_ARR_IDEN(ID , NUMCONST))
 					|	ID COLON simpleExpression			(Ast.VARDEC_INIT(ID, simpleExpression))
 
-funDeclaration		:	typeSpecifier ID LPAREN paramList RPAREN LBRACE varDeclaration RBRACE
-															(Ast.RETFUNC(typeSpecifier, ID, paramList, varDeclaration))
+funDeclaration		:	typeSpecifier ID LPAREN paramList RPAREN LBRACE statementList RBRACE
+															(Ast.RETFUNC(typeSpecifier, ID, paramList, statementList))
+
+statementList		:	statement statementList				(statement::statementList)
+					|										([])
+
+statement			:	exprStmt							(exprStmt)
+					|	localDeclaration					(localDeclaration)
+
+localDeclaration	:	typeSpecifier varDeclList SEMICOLON (Ast.LOCAL_VARDEC(typeSpecifier , varDeclList))
+
+exprStmt			:	expression SEMICOLON				(Ast.EXPR_STMT(SOME(expression)))
+					|	SEMICOLON							(Ast.EXPR_STMT(NONE))
+
+expression			:	simpleExpression					(Ast.SIMP_EXP(simpleExpression))
+					|	mutable ASSIGN expression			(Ast.ASSIGNMENT(mutable, expression))
+
+mutable				:	ID									(Ast.MUT_IDEN(ID))
+					|	mutable LBRACK expression RBRACK	(Ast.MUT_ARR(mutable, expression))
 
 paramList			:	param SEMICOLON paramList			(param::paramList)
 					|	param								([param])
