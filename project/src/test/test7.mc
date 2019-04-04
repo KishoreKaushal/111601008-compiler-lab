@@ -36,6 +36,19 @@ int ant (bool fox) {
 
         }
 
+
+        if (true) {
+
+        } 
+
+        if (true) {
+
+        }
+
+        else {
+            
+        }
+
         if ( true ) {
 
         } else {
@@ -44,7 +57,7 @@ int ant (bool fox) {
             }
 
             if (true) {
-                
+
             }
         }
 
