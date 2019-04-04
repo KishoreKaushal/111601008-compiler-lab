@@ -37,6 +37,8 @@
 		|	localDeclaration of Ast.statement
 		|	mutable 		of Ast.mutable
 		|	retStmt			of Ast.returnStmt
+		|	selStmt			of Ast.selectionStmt
+		|	iterStmt		of Ast.iterationStmt
 
 %keyword INT STRING BOOL
 
@@ -89,9 +91,19 @@ statementList		:	statement statementList				(statement::statementList)
 statement			:	exprStmt							(exprStmt)
 					|	localDeclaration					(localDeclaration)
 					|	retStmt								(Ast.RET_STMT(retStmt))
+					|	selStmt								(Ast.SEL_STMT(selStmt))
+					|	iterStmt							(Ast.ITR_STMT(iterStmt))
 
 retStmt				:	RETURN SEMICOLON					(Ast.RETNOTHING)
 					|	RETURN expression SEMICOLON			(Ast.RETEXPR(expression))
+
+selStmt				:	IF LPAREN simpleExpression RPAREN LBRACE statementList RBRACE
+															(Ast.IF(simpleExpression,statementList))
+					|	IF LPAREN simpleExpression RPAREN LBRACE statementList RBRACE ELSE LBRACE statementList RBRACE
+															(Ast.IF_ELSE(simpleExpression,statementList1,statementList2))
+
+iterStmt			:	WHILE LPAREN simpleExpression RPAREN LBRACE statementList RBRACE
+															(Ast.WHILE_LOOP(simpleExpression, statementList))
 
 localDeclaration	:	typeSpecifier varDeclList SEMICOLON (Ast.LOCAL_VARDEC(typeSpecifier , varDeclList))
 

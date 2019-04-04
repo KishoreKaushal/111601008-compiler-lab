@@ -32,7 +32,8 @@ structure Ast = struct
 
     and statement   = EXPR_STMT of (expression option)
                     | LOCAL_VARDEC of (typeSpecifier * varDeclId list)
-                    (* | SEL_STMT of selectionStmt *)
+                    | SEL_STMT of selectionStmt
+                    | ITR_STMT of iterationStmt
                     | RET_STMT of returnStmt
 
     and expression  = SIMP_EXP of simpleExpression
@@ -52,8 +53,10 @@ structure Ast = struct
     and mutable = MUT_IDEN of ID
                 | MUT_ARR of (mutable * expression)
 
-    (* and selectionStmt   = IF of (simpleExpression * statement)
-                        | IF_ELSE of (simpleExpression * statement * statement) *)
+    and selectionStmt   = IF of (simpleExpression * statement list)
+                        | IF_ELSE of (simpleExpression * statement list * statement list)
+    
+    and iterationStmt   = WHILE_LOOP of (simpleExpression * statement list)
 
     and returnStmt = RETNOTHING
                     | RETEXPR of (expression)
