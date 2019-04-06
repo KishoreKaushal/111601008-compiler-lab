@@ -1,6 +1,7 @@
 $(SML_LIB)/basis/basis.mlb
 $(SML_LIB)/mlyacc-lib/mlyacc-lib.mlb
 
+errormsg.sml
 MinC_ast.sml
 translate.sml
 MinC.grm.sig
