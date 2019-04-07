@@ -1,3 +1,4 @@
+$(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
 $(SML_LIB)/basis/basis.mlb
 $(SML_LIB)/mlyacc-lib/mlyacc-lib.mlb
 
@@ -6,9 +7,9 @@ table.sml
 errormsg.sml
 symbol.sml
 types.sml
+MinC_ast.sml
 env.sig
 env.sml
-MinC_ast.sml
 translate.sml
 MinC.grm.sig
 MinC.grm.sml

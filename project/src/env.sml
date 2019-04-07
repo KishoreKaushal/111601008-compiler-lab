@@ -25,7 +25,7 @@ struct
             val toadd = [
                             ("printInt", FunEntry ({formals=[T.INT], result=T.VOID})),
                             ("printBool", FunEntry ({formals=[T.BOOL], result=T.VOID})),
-                            ("exit", FunEntry ({formals=[T.INT], result=T.UNIT}))
+                            ("exit", FunEntry ({formals=[T.INT], result=T.VOID}))
                         ]
         in
             foldr addtotable S.empty toadd
