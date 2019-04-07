@@ -14,4 +14,5 @@ translate.sml
 MinC.grm.sig
 MinC.grm.sml
 MinC.lex.sml
+semant.sml
 MinCCompile.sml
