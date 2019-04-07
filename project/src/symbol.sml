@@ -34,8 +34,7 @@ struct
 
   fun name(s,n) = s
 
-  structure Table = IntMapTable(type key = symbol
-				                fun getInt(s,n) = n)
+  structure Table = IntMapTable(type key = symbol fun getInt(s,n) = n)
 
   type 'a table= 'a Table.table
   val empty = Table.empty

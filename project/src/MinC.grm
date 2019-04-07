@@ -3,6 +3,7 @@
 	| SEMICOLON
 	| INT
 	| STRING
+	| VOID
 	| BOOL
 	| NUMCONST of int
 	| STRINGCONST of string

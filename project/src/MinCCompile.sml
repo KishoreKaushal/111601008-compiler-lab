@@ -22,7 +22,7 @@ val makeFileLexer      = makeMinCLexer o TextIO.openIn
 val thisLexer = case CommandLine.arguments() of
 		    []  => makeMinCLexer TextIO.stdIn
 		 |  [x] => makeFileLexer x
-		 |  _   => (TextIO.output(TextIO.stdErr, "usage: ec file"); OS.Process.exit OS.Process.failure)
+		 |  _   => (TextIO.output(TextIO.stdErr, "usage: source file"); OS.Process.exit OS.Process.failure)
 
 
 
