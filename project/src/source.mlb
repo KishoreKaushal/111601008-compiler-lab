@@ -4,6 +4,8 @@ $(SML_LIB)/mlyacc-lib/mlyacc-lib.mlb
 errormsg.sml
 symbol.sml
 types.sml
+env.sig
+env.sml
 MinC_ast.sml
 translate.sml
 MinC.grm.sig
