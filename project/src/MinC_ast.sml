@@ -64,6 +64,7 @@ structure Ast = struct
     and typeSpecifier   = INT
                         | BOOL 
                         | STRING
+                        | VOID
 
 
     type program = declaration list
