@@ -31,7 +31,10 @@ fun print_error (s,i:int,_) = TextIO.output(TextIO.stdErr,
 
 (* The portion of the code that does the actual compiling *)
 
+(* parsing the program *)
 val (program,_) = MinCParser.parse (0,thisLexer,print_error,())
+
+(* compiling the program *)
 val executable  = Translate.compile program
 
 end
