@@ -4,10 +4,10 @@ struct
 fun transDec (Ast.VARDEC (_ , varDecIdList)) = (transVarDecIdList varDecIdList)
 |   transDec (Ast.FUNDEC (funDec)) = (transFunDec funDec)
 
-and transFunDec Ast.RETFUNC (ty, id, paramList, stmtList) = (
+and transFunDec (Ast.RETFUNC (ty, id, paramList, stmtList)) = (
     print "function ("; 
     transParamList paramList;
-    print ") {"
+    print ") {";
     transStmtList stmtList;
     print "}"
 )
@@ -24,13 +24,17 @@ and transParamId (Ast.PARAM_IDEN(id)) = (print id)
 |   transParamId (Ast.PARAM_ARR_IDEN (id)) = (print id)
 
 and transStmtList [] = ()
-|   transStmtList (stmt :: stmtList) = (transStmt stmt;  transStmtList stmtList)
+|   transStmtList (stmt :: stmtList) = (transStmt stmt; print "; \n"; transStmtList stmtList)
 
-and transStmt (Ast.EXPR_STMT(expr_op)) = ()
+and transStmt (Ast.EXPR_STMT(NONE)) = ()
+|   transStmt (Ast.EXPR_STMT(SOME(expr))) = (transExpression(expr))
 |   transStmt (Ast.LOCAL_VARDEC(_,varDecIdList)) = (transVarDecIdList varDecIdList)
 |   transStmt (Ast.SEL_STMT(selStmt)) = ()
 |   transStmt (Ast.ITR_STMT(itrStmt)) = ()
 |   transStmt (Ast.RET_STMT(retStmt)) = ()
+
+and transExpression (Ast.SIMP_EXP(simExp)) = (transSimpleExpr(simExp))
+|   transExpression (Ast.ASSIGNMENT(mut, expr)) = (transMutable mut; print " = "' transExpression expr)
 
 and transVarDecIdList [] = ()
 |   transVarDecIdList (varDecId :: varDecIdList) = (transVarDeclId (varDecId); transVarDecIdList(varDecIdList))
