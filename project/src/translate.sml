@@ -5,7 +5,8 @@ fun transDec (Ast.VARDEC (_ , varDecIdList)) = (transVarDecIdList varDecIdList)
 |   transDec (Ast.FUNDEC (funDec)) = (transFunDec funDec)
 
 and transFunDec (Ast.RETFUNC (ty, id, paramList, stmtList)) = (
-    print "function ("; 
+    print "function (";
+    print id; 
     transParamList paramList;
     print ") {";
     transStmtList stmtList;
