@@ -5,8 +5,9 @@ fun transDec (Ast.VARDEC (_ , varDecIdList)) = (transVarDecIdList varDecIdList)
 |   transDec (Ast.FUNDEC (funDec)) = (transFunDec funDec)
 
 and transFunDec (Ast.RETFUNC (ty, id, paramList, stmtList)) = (
-    print "function (";
+    print "function ";
     print id; 
+    print "(";
     transParamList paramList;
     print ") {";
     transStmtList stmtList;
@@ -19,7 +20,9 @@ and transParamList [] = ()
 and transParam (Ast.PARAM (ty , paramIdList)) = (transParamIdList paramIdList)
 
 and transParamIdList [] = ()
-|   transParamIdList (paramId :: paramIdList) = (transParamId paramId; print ", "; transParamIdList paramIdList)
+|   transParamIdList (paramId :: paramIdList) = (transParamId paramId; 
+                                                    if (List.null(paramIdList) = false) then print ", " else (); 
+                                                    transParamIdList paramIdList)
 
 and transParamId (Ast.PARAM_IDEN(id)) = (print id)
 |   transParamId (Ast.PARAM_ARR_IDEN (id)) = (print id)
