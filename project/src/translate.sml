@@ -36,14 +36,14 @@ and transStmt (Ast.EXPR_STMT(NONE)) = ()
 |   transStmt (Ast.EXPR_STMT(SOME(expr))) = (transExpression(expr))
 |   transStmt (Ast.LOCAL_VARDEC(_,varDecIdList)) = (transVarDecIdList varDecIdList)
 |   transStmt (Ast.SEL_STMT(selStmt)) = (transSelStmt selStmt)
-|   transStmt (Ast.ITR_STMT(itrStmt)) = ()
-|   transStmt (Ast.RET_STMT(retStmt)) = ()
+|   transStmt (Ast.ITR_STMT(itrStmt)) = (transItrStmt itrStmt)
+|   transStmt (Ast.RET_STMT(retStmt)) = (transRetStmt retStmt)
 
 and transSelStmt (Ast.IF(simExp, stmtList)) = (print "if ("; transSimpleExpr simExp; print ") {\n"; transStmtList stmtList; print "}")
 |   transSelStmt (Ast.IF_ELSE(simExp1, stmtList1, stmtList2)) = (print "if ("; transSimpleExpr simExp1; print ") {\n"; 
-                                            transStmtList stmtList1; print "} else {\n"; transStmtList stmtList2)
+                                            transStmtList stmtList1; print "} else {\n"; transStmtList stmtList2; print "}\n")
 
-and transItrStmt (Ast.WHILE_LOOP(simExp, stmtList)) = ()
+and transItrStmt (Ast.WHILE_LOOP(simExp, stmtList)) = (print "while ("; transSimpleExpr simExp ; print ") {\n"; transStmtList stmtList ; print "}\n")
 
 and transRetStmt (Ast.RETNOTHING) = (print "return ")
 |   transRetStmt (Ast.RETEXPR(expr)) = (print "return "; transExpression expr)
