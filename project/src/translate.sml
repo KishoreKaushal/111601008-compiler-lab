@@ -39,8 +39,9 @@ and transStmt (Ast.EXPR_STMT(NONE)) = ()
 |   transStmt (Ast.ITR_STMT(itrStmt)) = ()
 |   transStmt (Ast.RET_STMT(retStmt)) = ()
 
-and transSelStmt (Ast.IF(simExp, stmtList)) = ()
-|   transSelStmt (Ast.IF_ELSE(simExp1, stmtList, simExp2)) = ()
+and transSelStmt (Ast.IF(simExp, stmtList)) = (print "if ("; transSimpleExpr simExp; print ") {\n"; transStmtList stmtList; print "}")
+|   transSelStmt (Ast.IF_ELSE(simExp1, stmtList1, stmtList2)) = (print "if ("; transSimpleExpr simExp1; print ") {\n"; 
+                                            transStmtList stmtList1; print "} else {\n"; transStmtList stmtList2)
 
 and transItrStmt (Ast.WHILE_LOOP(simExp, stmtList)) = ()
 
