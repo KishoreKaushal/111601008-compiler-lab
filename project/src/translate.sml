@@ -13,7 +13,15 @@ and transFunDec Ast.RETFUNC (ty, id, paramList, stmtList) = (
 )
 
 and transParamList [] = ()
-|   transParamList (param :: paramList) = ()
+|   transParamList (param :: paramList) = ( transParam param; transParamList paramList)
+
+and transParam (Ast.PARAM (ty , paramIdList)) = (transParamIdList paramIdList)
+
+and transParamIdList [] = ()
+|   transParamIdList (paramId :: paramIdList) = (transParamId paramId; print ", "; transParamIdList paramIdList)
+
+and transParamId (Ast.PARAM_IDEN(id)) = (print id)
+|   transParamId (Ast.PARAM_ARR_IDEN (id)) = (print id)
 
 and transStmtList [] = ()
 |   transStmtList (stmt :: stmtList) = ()
