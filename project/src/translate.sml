@@ -1,8 +1,22 @@
 structure Translate =
 struct
 
-fun transDec dec = case dec of Ast.VARDEC (_ , varDecIdList) => (transVarDecIdList varDecIdList)
-                    |   Ast.FUNDEC (funDec) => ()
+fun transDec (Ast.VARDEC (_ , varDecIdList)) = (transVarDecIdList varDecIdList)
+|   transDec (Ast.FUNDEC (funDec)) = (transFunDec funDec)
+
+and transFunDec Ast.RETFUNC (ty, id, paramList, stmtList) = (
+    print "function ("; 
+    transParamList paramList;
+    print ") {"
+    transStmtList stmtList;
+    print "}"
+)
+
+and transParamList [] = ()
+|   transParamList (param :: paramList) = ()
+
+and transStmtList [] = ()
+|   transStmtList (stmt :: stmtList) = ()
 
 and transVarDecIdList [] = ()
 |   transVarDecIdList (varDecId :: varDecIdList) = (transVarDeclId (varDecId); transVarDecIdList(varDecIdList))
