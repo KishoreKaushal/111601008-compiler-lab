@@ -28,7 +28,9 @@ and transParamId (Ast.PARAM_IDEN(id)) = (print id)
 |   transParamId (Ast.PARAM_ARR_IDEN (id)) = (print id)
 
 and transStmtList [] = ()
-|   transStmtList (stmt :: stmtList) = (transStmt stmt; print "; \n"; transStmtList stmtList)
+|   transStmtList (stmt :: stmtList) = (transStmt stmt; 
+                                        if (List.null(stmtList) = false) then print "; \n" else (); 
+                                        transStmtList stmtList)
 
 and transStmt (Ast.EXPR_STMT(NONE)) = ()
 |   transStmt (Ast.EXPR_STMT(SOME(expr))) = (transExpression(expr))
