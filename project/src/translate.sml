@@ -24,7 +24,13 @@ and transParamId (Ast.PARAM_IDEN(id)) = (print id)
 |   transParamId (Ast.PARAM_ARR_IDEN (id)) = (print id)
 
 and transStmtList [] = ()
-|   transStmtList (stmt :: stmtList) = ()
+|   transStmtList (stmt :: stmtList) = (transStmt stmt;  transStmtList stmtList)
+
+and transStmt (Ast.EXPR_STMT(expr_op)) = ()
+|   transStmt (Ast.LOCAL_VARDEC(_,varDecIdList)) = (transVarDecIdList varDecIdList)
+|   transStmt (Ast.SEL_STMT(selStmt)) = ()
+|   transStmt (Ast.ITR_STMT(itrStmt)) = ()
+|   transStmt (Ast.RET_STMT(retStmt)) = ()
 
 and transVarDecIdList [] = ()
 |   transVarDecIdList (varDecId :: varDecIdList) = (transVarDeclId (varDecId); transVarDecIdList(varDecIdList))
