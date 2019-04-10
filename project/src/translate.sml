@@ -34,7 +34,10 @@ and transStmt (Ast.EXPR_STMT(NONE)) = ()
 |   transStmt (Ast.RET_STMT(retStmt)) = ()
 
 and transExpression (Ast.SIMP_EXP(simExp)) = (transSimpleExpr(simExp))
-|   transExpression (Ast.ASSIGNMENT(mut, expr)) = (transMutable mut; print " = "' transExpression expr)
+|   transExpression (Ast.ASSIGNMENT(mut, expr)) = (transMutable mut; print " = "; transExpression expr)
+
+and transMutable (Ast.MUT_IDEN(id)) = (print id)
+|   transMutable (Ast.MUT_ARR(mut, expr)) = (transMutable mut; print "["; transExpression expr; print "]")
 
 and transVarDecIdList [] = ()
 |   transVarDecIdList (varDecId :: varDecIdList) = (transVarDeclId (varDecId); transVarDecIdList(varDecIdList))
