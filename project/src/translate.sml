@@ -5,13 +5,13 @@ fun transDec (Ast.VARDEC (_ , varDecIdList)) = (transVarDecIdList varDecIdList)
 |   transDec (Ast.FUNDEC (funDec)) = (transFunDec funDec)
 
 and transFunDec (Ast.RETFUNC (ty, id, paramList, stmtList)) = (
-    print "function ";
+    print "\nfunction ";
     print id; 
     print "(";
     transParamList paramList;
-    print ") {";
+    print ") {\n";
     transStmtList stmtList;
-    print "}"
+    print "\n}"
 )
 
 and transParamList [] = ()
@@ -29,15 +29,23 @@ and transParamId (Ast.PARAM_IDEN(id)) = (print id)
 
 and transStmtList [] = ()
 |   transStmtList (stmt :: stmtList) = (transStmt stmt; 
-                                        if (List.null(stmtList) = false) then print "; \n" else (); 
+                                        print ";\n";
                                         transStmtList stmtList)
 
 and transStmt (Ast.EXPR_STMT(NONE)) = ()
 |   transStmt (Ast.EXPR_STMT(SOME(expr))) = (transExpression(expr))
 |   transStmt (Ast.LOCAL_VARDEC(_,varDecIdList)) = (transVarDecIdList varDecIdList)
-|   transStmt (Ast.SEL_STMT(selStmt)) = ()
+|   transStmt (Ast.SEL_STMT(selStmt)) = (transSelStmt selStmt)
 |   transStmt (Ast.ITR_STMT(itrStmt)) = ()
 |   transStmt (Ast.RET_STMT(retStmt)) = ()
+
+and transSelStmt (Ast.IF(simExp, stmtList)) = ()
+|   transSelStmt (Ast.IF_ELSE(simExp1, stmtList, simExp2)) = ()
+
+and transItrStmt (Ast.WHILE_LOOP(simExp, stmtList)) = ()
+
+and transRetStmt (Ast.RETNOTHING) = (print "return ")
+|   transRetStmt (Ast.RETEXPR(expr)) = (print "return "; transExpression expr)
 
 and transExpression (Ast.SIMP_EXP(simExp)) = (transSimpleExpr(simExp))
 |   transExpression (Ast.ASSIGNMENT(mut, expr)) = (transMutable mut; print " = "; transExpression expr)
