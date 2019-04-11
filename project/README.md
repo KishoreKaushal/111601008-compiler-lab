@@ -1,4 +1,4 @@
-Compiler course project: Designing a compiler for converting C- to MIPS.
+Compiler course project: Designing a compiler for converting C- to JS.
 
 ## Language Specification
 
@@ -183,3 +183,4 @@ and run to the end of the line. No nested or multi-line comments is supported.
                     |   **STRINGCONST**
                     |   **true**
                     |   **false**
+
